@@ -1,0 +1,383 @@
+
+//public delegate T Parser<T>(node &JsonNode);
+//
+//func ParseInitialUnit(obj &JsonObject) InitialUnit {
+//  // public readonly Location location;
+//  // public readonly InitialSymbol dominoSymbolDescription;
+//  // public readonly InitialSymbol faceSymbolDescription;
+//  // public readonly List<(ulong, InitialSymbol)> detailSymbolDescriptionById;
+//  // public readonly float hpRatio;
+//  // public readonly float mpRatio;
+//  
+//  location = ExpectMemberLocation(obj, "location");
+//  domino = ExpectMemberSymbol(obj, "domino");
+//  face = ExpectMemberSymbol(obj, "face");
+//  idToDetailSymbol = List<(ulong, InitialSymbol)>();
+//  hpPercent = 1f;
+//  mpPercent = 1f;
+//  ret InitialUnit(location, domino, face, idToDetailSymbol, hpPercent, mpPercent);
+//}
+
+func ParseInitialSymbol(node &JsonNode) InitialSymbol {
+  obj = &node.as<JsonObject>().expect("InitialSymbol node wasn't an object!");
+
+  glyph =
+      (&obj.fields.get("glyph").get("InitialSymbol doesnt have glyph field")
+      .as<JsonObject>().expect("InitialSymbol glyph wasnt an object!"))
+      .ExpectSymbolGlyph();
+
+  maybe_sides_obj = GetMaybeMemberObject(obj, "sides");
+  maybe_sides =
+      if maybe_sides_obj.isEmpty() { None<InitialSymbolSides>() }
+      else { Some(ExpectSymbolSides(&maybe_sides_obj.get("derped a"))) };
+
+  maybe_outline_obj = GetMaybeMemberObject(obj, "outline");
+  maybe_outline =
+      if maybe_outline_obj.isEmpty() { None<InitialSymbolOutline>() }
+      else { Some(ExpectSymbolOutline(&maybe_outline_obj.get("derped b"))) };
+
+  maybe_rotation_degrees = GetMaybeMemberInteger(obj, "rotation_degrees");
+  rotation_degrees =
+      if maybe_rotation_degrees.isEmpty() { 0 }
+      else { maybe_rotation_degrees.get("derped c") };
+
+  maybe_size_percent = GetMaybeMemberInteger(obj, "size_percent");
+  size_percent =
+      if maybe_size_percent.isEmpty() { 100 }
+      else { maybe_size_percent.get("derped d") };
+      
+  ret InitialSymbol(
+      glyph, maybe_outline, maybe_sides, rotation_degrees, size_percent);
+}
+
+func parseSymbolId(obj &JsonObject) SymbolId {
+  fontName =
+      obj.fields.get("font_name").get("SymbolId has no font field!")
+      .as<JsonString>().expect("SymbolId's font isn't a string!")
+      .value;
+
+  chaar =
+      obj.fields.get("unicode").get("SymbolId had no unicode!")
+      .as<JsonNumber>().expect("SymbolId unicode wasnt a number!")
+      .value;
+  ret SymbolId(fontName, chaar);
+}
+
+//func GetMaybeColor(node &JsonNode, out Vec4i result) bool {
+//  if (node == null) {
+//    result = Vec4i(0, 0, 0, 0);
+//    ret false;
+//  }
+//  result = ParseColor(node);
+//  ret true;
+//}
+
+func ParseColor(node &JsonNode) Vec4i {
+  arr_result = node.as<JsonArray>();
+  if arr_result.is_ok() {
+    arr = &(arr_result).expect();
+    if (arr.elements.len() != 3 and arr.elements.len() != 4) {
+      panic("Color array had {arr.elements.len()} elements, expected 3 or 4.");
+    }
+    
+    red = arr.elements[0].as<JsonNumber>().expect("Color array element 0 not an integer!").value;
+    green = arr.elements[1].as<JsonNumber>().expect("Color array element 1 not an integer!").value;
+    blue = arr.elements[2].as<JsonNumber>().expect("Color array element 2 not an integer!").value;
+    alpha =
+        if arr.elements.len() == 4 {
+          arr.elements[3].as<JsonNumber>().expect("Color array element 3 not an integer!").value
+        } else {
+          255
+        };
+
+    ret Vec4i(red, green, blue, alpha);
+  }
+
+  obj_result = node.as<JsonObject>();
+  if obj_result.is_ok() {
+    obj = &(obj_result).expect();
+
+    red = expect_obj_member_int(obj, "red").expect("Color obj field 'red' not an integer!");
+    green = expect_obj_member_int(obj, "green").expect("Color obj field 'green' not an integer!");
+    blue = expect_obj_member_int(obj, "blue").expect("Color obj field 'blue' not an integer!");
+    alpha =
+        if obj.fields.ContainsKey("alpha") {
+          expect_obj_member_int(obj, "alpha").expect("Color obj field 'alpha' not an integer!")
+        } else {
+          255
+        };
+
+    ret Vec4i(red, green, blue, alpha);
+  } else {
+    ret panic("Expected an array for a color!");
+  }
+}
+
+func ParseColorAnim(node &JsonNode) Vec4iAnimation {
+  arr_result = node.as<JsonArray>();
+  if arr_result.is_ok() {
+    arr = (arr_result).expect();
+    ret ConstantVec4iAnimation(ParseColor(node));
+  }
+
+  obj_result = node.as<JsonObject>();
+  if obj_result.is_ok() {
+    obj = &(obj_result).expect();
+
+    type_result = expect_obj_member_str(obj, "type");
+    if type_result.is_ok() {
+      type = (type_result).expect();
+      if type == "multiply" {
+        ret MultiplyVec4iAnimation(
+            ExpectMemberColorAnim(obj, "left"),
+            ExpectMemberColorAnim(obj, "right"));
+      } else if type == "add" {
+        ret AddVec4iAnimation(
+            ExpectMemberColorAnim(obj, "left"),
+            ExpectMemberColorAnim(obj, "right"));
+      } else if type == "constant" {
+        ret ConstantVec4iAnimation(
+            ExpectMemberColor(obj, "val"));
+      } else {
+        ret panic("Unknown animation type: " + type);
+      }
+    } else {
+      ret ConstantVec4iAnimation(ParseColor(obj));
+    }
+  }
+
+  panic("Expected an array or object for a color!");
+}
+
+//func ParseVec3(obj JsonNode) Vec3 {
+//  if (obj is JsonArray arr) {
+//    if (arr.elements.len() != 3) {
+//      panic($"Vec3 array had {arr.elements.len()} elements, expected 3.");
+//    }
+//    int x = ExpectInteger(arr[0], "Color array element 0 not an integer!");
+//    int y = ExpectInteger(arr[1], "Color array element 0 not an integer!");
+//    int z = ExpectInteger(arr[2], "Color array element 0 not an integer!");
+//    ret Vec3(x, y, z);
+//  } else {
+//    panic("Expected an array for a color!");
+//  }
+//}
+//
+//func ParseVec2(obj JsonNode) Vec2 {
+//  if (obj is JsonArray arr) {
+//    if (arr.elements.len() != 2) {
+//      panic($"Vec2 array had {arr.elements.len()} elements, expected 2.");
+//    }
+//    int x = ExpectInteger(arr[0], "Color array element 0 not an integer!");
+//    int y = ExpectInteger(arr[1], "Color array element 0 not an integer!");
+//    ret Vec2(x, y);
+//  } else {
+//    panic("Expected an array for a color!");
+//  }
+//}
+
+func ExpectSymbolSides(obj &JsonObject) InitialSymbolSides {
+  depthPercent =
+      obj.fields.get("depth_percent").get("SymbolSides had no depth_percent!")
+      .as<JsonNumber>().expect("SymbolSides depth_percent wasnt a number!")
+      .value;
+  color = ExpectMemberColorAnim(obj, "color");
+  ret InitialSymbolSides(depthPercent, color);
+}
+
+func ExpectSymbolGlyph(obj &JsonObject) InitialSymbolGlyph {
+  symbolId =
+      (&obj.fields.get("symbol_id").get("InitialSymbolGlyph doesnt have symbol_id field")
+      .as<JsonObject>().expect("InitialSymbolGlyph symbolId wasnt an object!"))
+      .parseSymbolId();
+
+  color = ExpectMemberColorAnim(obj, "color");
+  ret InitialSymbolGlyph(symbolId, color);
+}
+
+func ExpectSymbolOutline(obj &JsonObject) InitialSymbolOutline {
+  modeStr =
+      obj.fields.get("type").get("SymbolOutline had no type!")
+      .as<JsonString>().expect("SymbolOutline type wasn't a string!")
+      .value;
+  mode =
+      if modeStr == "centered" { CenteredOutline() }
+      else if modeStr == "outer" { OuterOutline() }
+      else { panic("Outline type can only be 'centered' or 'outer', was: " + modeStr) };
+
+  color = ExpectMemberColorAnim(obj, "color");
+  ret InitialSymbolOutline(mode, color);
+}
+
+//func ExpectLocation(node &JsonNode) Location {
+//  if (node is JsonObject obj) {
+//    int groupX = ExpectMemberInteger(obj, "groupX");
+//    int groupY = ExpectMemberInteger(obj, "groupY");
+//    int indexInGroup = ExpectMemberInteger(obj, "indexInGroup");
+//    ret Location(groupX, groupY, indexInGroup);
+//  } else {
+//    panic("Expected an array for a color!");
+//  }
+//}
+//
+//func ExpectObject(node &JsonNode, message str) JsonObject {
+//  if (node == null) {
+//    panic(message);
+//  } else if (node is JsonObject obj) {
+//    ret obj;
+//  } else {
+//    panic(message);
+//  }
+//}
+//
+//func ExpectInteger(node &JsonNode, message str) int {
+//  if (node == null) {
+//    panic(message);
+//  } else if (node is JSONNumber num) {
+//    if (num.AsDouble > 0 and num.AsDouble < 1) {
+//      panic(message);
+//    }
+//    ret num.AsInt;
+//  } else {
+//    panic(message);
+//  }
+//}
+
+//func GetMaybeObject(node &JsonNode, message str, out JsonObject result) bool {
+//  if (node == null) {
+//    result = null;
+//    ret false;
+//  } else if (node is JsonObject obj) {
+//    result = obj;
+//    ret true;
+//  } else {
+//    panic(message);
+//  }
+//}
+//
+//func GetMaybeInteger(node &JsonNode, message str, out int result) bool {
+//  if (node is JSONNumber num) {
+//    if (num.AsDouble >= 0 and num.AsDouble < 1) {
+//      panic($"Expected integer, but got {num.AsDouble}");
+//    }
+//    result = num.AsInt;
+//    ret true;
+//  } else {
+//    panic(message);
+//  }
+//}
+//
+//func GetMaybeString(node &JsonNode, message str, out string result) bool {
+//  if (node is JSONString str) {
+//    result = str.Value;
+//    ret true;
+//  } else {
+//    panic(message);
+//  }
+//}
+//
+//func GetMaybeBoolean(node &JsonNode, message str, out bool result) bool {
+//  if (node is JSONBool b) {
+//    result = b.AsBool;
+//    ret true;
+//  } else {
+//    panic(message);
+//  }
+//}
+
+//func List<T> ExpectMemberArray<T>(obj &JsonObject, memberName str, Parser<T> elementParser) {
+//  ret ExpectArray<T>(ExpectMember(obj, memberName), $"Member '{memberName}' should be an array, but it isn't!", elementParser);
+//}
+//
+//func List<T> ExpectArray<T>(arrayNode &JsonNode, errorMessage str, Parser<T> elementParser) {
+//  if (arrayNode is JsonArray array) {
+//    List<T> result = List<T>();
+//    foreach (element in arrayNode.Children) {
+//      result.Add(elementParser(element));
+//    }
+//    ret result;
+//  } else {
+//    panic(errorMessage);
+//  }
+//}
+
+//func ExpectMemberLocation(obj &JsonObject, memberName str) Location {
+//  ret ExpectLocation(ExpectMemberObject(obj, memberName));
+//}
+//
+func ExpectMember(obj &JsonObject, memberName str) &JsonNode {
+  if (not obj.fields.ContainsKey(memberName)) {
+    panic("Expected member '" + memberName + "' but was missing!");
+  }
+  ret &(obj.fields.get(memberName)).get("derped g");
+}
+//
+//func ExpectMemberSymbol(obj &JsonObject, memberName str) InitialSymbol {
+//  ret ParseInitialSymbol(ExpectMemberObject(obj, memberName));
+//}
+//
+//func ExpectMemberVec3(obj &JsonObject, memberName str) Vec3 {
+//  ret ParseVec3(ExpectMember(obj, memberName));
+//}
+//
+func ExpectMemberColor(obj &JsonObject, memberName str) Vec4i {
+  ret ParseColor(ExpectMember(obj, memberName));
+}
+
+func ExpectMemberColorAnim(obj &JsonObject, memberName str) Vec4iAnimation {
+  ret ParseColorAnim(ExpectMember(obj, memberName));
+}
+//
+//func ExpectMemberVec2(obj &JsonObject, memberName str) Vec2 {
+//  ret ParseVec2(ExpectMember(obj, memberName));
+//}
+
+func GetMaybeMemberObject(obj &JsonObject, memberName str) Opt<&JsonObject> {
+  if not obj.fields.ContainsKey(memberName) {
+    ret None<&JsonObject>();
+  }
+  ret Some(&obj.fields.get(memberName).get("derped h").as<JsonObject>().expect("Member '{memberName}' should be an object but isn't!"));
+}
+
+//func GetMaybeMemberVec3(obj &JsonObject, memberName str, out Vec3 result) bool {
+//  if (not obj.fields.ContainsKey(memberName)) {
+//    result = Vec3(0, 0, 0);
+//    ret false;
+//  }
+//  result = ParseVec3(obj[memberName]);
+//  ret true;
+//}
+
+func GetMaybeMemberInteger(obj &JsonObject, memberName str) Opt<int> {
+  maybe_node = obj.fields.get(memberName);
+  if maybe_node.isEmpty() {
+    ret None<int>();
+  }
+  member_node = maybe_node.get("derped i");
+  member_num = member_node.as<JsonNumber>().expect("Member should have been an integer!").value;
+  ret Some<int>(member_num);
+}
+
+//func GetMaybeMemberString(obj &JsonObject, memberName str, out string result) bool {
+//  if (not obj.fields.ContainsKey(memberName)) {
+//    result = "";
+//    ret false;
+//  }
+//  ret GetMaybeString(obj[memberName], $"Member '{memberName}' should be an string but isn't!", out result);
+//}
+//
+//func GetMaybeMemberBoolean(obj &JsonObject, memberName str, out bool result) bool {
+//  if (not obj.fields.ContainsKey(memberName)) {
+//    result = false;
+//    ret false;
+//  }
+//  ret GetMaybeBoolean(obj[memberName], $"Member '{memberName}' should be a boolean but isn't!", out result);
+//}
+//
+//func GetMaybeMemberColor(obj &JsonObject, memberName str, out Vec4i result) bool {
+//  if (not obj.fields.ContainsKey(memberName)) {
+//    result = Vec4i(0, 0, 0, 0);
+//    ret false;
+//  }
+//  ret GetMaybeColor(obj[memberName], out result);
+//}

@@ -1,0 +1,4 @@
+{"event_type":"Start","screen_grid_width":114,"screen_grid_height":45}
+{"event_type":"SetHoveredLocation","tile_id":1,"location":{"group_x":0,"group_y":0,"index_in_group":0}}
+{"event_type":"LocationMouseDown","tile_id":1,"location":{"group_x":0,"group_y":0,"index_in_group":0}}
+{"event_type":"SetHoveredLocation","tile_id":0,"location":null}

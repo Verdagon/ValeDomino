@@ -1,0 +1,22 @@
+
+struct ConstantVec4iAnimation {
+  val Vec4i;
+}
+impl Vec4iAnimation for ConstantVec4iAnimation;
+
+func clone(self &ConstantVec4iAnimation impl Vec4iAnimation) Vec4iAnimation {
+  ConstantVec4iAnimation(self.val)
+}
+
+func ConstantVec4iAnimationWithAll(n int) ConstantVec4iAnimation {
+  ConstantVec4iAnimation(Vec4iWithAll(n))
+}
+
+func ConstantVec4iAnimationWhite() ConstantVec4iAnimation { ConstantVec4iAnimation(Vec4iWhite()) }
+func ConstantVec4iAnimationCyan() ConstantVec4iAnimation { ConstantVec4iAnimation(Vec4iCyan()) }
+func ConstantVec4iAnimationRed() ConstantVec4iAnimation { ConstantVec4iAnimation(Vec4iRed()) }
+func ConstantVec4iAnimationBlack() ConstantVec4iAnimation { ConstantVec4iAnimation(Vec4iBlack()) }
+func ConstantVec4iAnimationBlue() ConstantVec4iAnimation { ConstantVec4iAnimation(Vec4iBlue()) }
+func ConstantVec4iAnimationAll(i int) ConstantVec4iAnimation {
+  ConstantVec4iAnimation(Vec4i(i, i, i, i))
+}

@@ -1,0 +1,51 @@
+
+func NoOutline() int { 0 }
+func OuterOutline() int { 1 }
+func CenteredOutline() int { 2 }
+
+
+struct InitialSymbolGlyph {
+  symbolId SymbolId;
+  color Vec4iAnimation;
+}
+func clone(self &InitialSymbolGlyph) InitialSymbolGlyph {
+  InitialSymbolGlyph(
+    self.symbolId.clone(),
+    self.color.clone())
+}
+
+struct InitialSymbolOutline {
+  mode int;
+  color Vec4iAnimation;
+}
+func clone(self &InitialSymbolOutline) InitialSymbolOutline {
+  InitialSymbolOutline(
+    self.mode,
+    self.color.clone())
+}
+
+struct InitialSymbolSides {
+  depthPercent int;
+  color Vec4iAnimation;
+}
+func clone(self &InitialSymbolSides) InitialSymbolSides {
+  InitialSymbolSides(
+    self.depthPercent,
+    self.color.clone())
+}
+
+struct InitialSymbol {
+  glyph InitialSymbolGlyph;
+  outline Opt<InitialSymbolOutline>;
+  sides Opt<InitialSymbolSides>;
+  rotationDegrees int;
+  sizePercent int;
+}
+func clone(self &InitialSymbol) InitialSymbol {
+  InitialSymbol(
+    self.glyph.clone(),
+    self.outline.map({_.clone()}),
+    self.sides.map({_.clone()}),
+    self.rotationDegrees,
+    self.sizePercent)
+}

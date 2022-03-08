@@ -1,0 +1,82 @@
+
+func Vec4iWhite() Vec4i { Vec4i(255, 255, 255, 255) }
+func Vec4iCyan() Vec4i { Vec4i(0, 255, 255, 255) }
+func Vec4iRed() Vec4i { Vec4i(255, 0, 0, 255) }
+func Vec4iBlack() Vec4i { Vec4i(0, 0, 0, 255) }
+func Vec4iBlue() Vec4i { Vec4i(0, 0, 255, 255) }
+
+struct Vec4i imm {
+  x int;
+  y int;
+  z int;
+  w int;
+}
+
+func all(n int) Vec4i { Vec4i(n, n, n, n) }
+
+func ==(a Vec4i, b Vec4i) bool {
+  Vec4i[ax, ay, az, aw] = a;
+  Vec4i[bx, by, bz, bw] = b;
+  ret ax == bx and ay == by and az == bz and aw == bw;
+}
+
+//   public static bool operator==(Vec4i a, Vec4i b) {
+//     return a.Equals(b);
+//   }
+//   public static bool operator!=(Vec4i a, Vec4i b) {
+//     return !a.Equals(b);
+//   }
+//   public static Vec4i operator*(Vec4i a, int n) {
+//     return new Vec4i(a.x * n, a.y * n, a.z * n, a.w * n);
+//   }
+//   public static Vec4i operator/(Vec4i a, int n) {
+//     return new Vec4i(a.x / n, a.y / n, a.z / n, a.w / n);
+//   }
+//   public static Vec4i operator+(Vec4i a, Vec4i b) {
+//     return new Vec4i(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+//   }
+//   public override int GetHashCode() {
+//     return GetDeterministicHashCode();
+//   }
+//   public int GetDeterministicHashCode() { return hashCode; }
+//   public int CompareTo(Vec4i that) {
+//     if (x != that.x) {
+//       return x.CompareTo(that.x);
+//     }
+//     if (y != that.y) {
+//       return y.CompareTo(that.y);
+//     }
+//     if (z != that.z) {
+//       return z.CompareTo(that.z);
+//     }
+//     if (w != that.w) {
+//       return w.CompareTo(that.w);
+//     }
+//     return 0;
+//   }
+//   public override string ToString() { return DStr(); }
+//   public string DStr() {
+//     return "Vec4i(" +
+//         x + ", " +
+//         y + ", " +
+//         z + ", " +
+//         w
+//         + ")";
+
+//     }
+//     public static Vec4i Parse(ParseSource source) {
+//       source.Expect(NAME);
+//       source.Expect("(");
+//       var x = source.ParseInt();
+//       source.Expect(",");
+//       var y = source.ParseInt();
+//       source.Expect(",");
+//       var z = source.ParseInt();
+//       source.Expect(",");
+//       var w = source.ParseInt();
+//       source.Expect(")");
+//       return new Vec4i(x, y, z, w);
+//   }
+// }
+       
+// }

@@ -1,0 +1,55 @@
+
+struct Terrain {
+  pattern Pattern;
+  elevationStepHeight int;
+  tiles HashMap<Location, TerrainTile, LocationHasher, LocationEquator>;
+}
+
+// func TileExists(location Location) bool {
+//   ret tiles.ContainsKey(location);
+// }
+
+// func GetAdjacentExistingLocations(
+//     self &Terrain,
+//     loc Location,
+//     adjacentCornersToo bool)
+// List<Location> {
+//   result = List<Location>();
+//   pattern.GetAdjacentLocations(loc, adjacentCornersToo).each((adjacentLoc){
+//     if (self.TileExists(adjacentLoc)) {
+//       result.add(adjacentLoc);
+//     }
+//   });
+//   ret result;
+// }
+
+// func GetAdjacentExistingLocations(
+//     self &Terrain,
+//     sourceLocs HashSet<Location>,
+//     includeSourceLocs bool,
+//     adjacentCornersToo bool)
+// HashSet<Location> {
+//   result = HashSet<Location>();
+//   self.pattern.GetAdjacentLocations(sourceLocs, includeSourceLocs, adjacentCornersToo).each((adjacentLoc){
+//     if (!self.TileExists(adjacentLoc)) {
+//       continue;
+//     }
+//     result.Add(adjacentLoc);
+//   });
+//   ret result;
+// }
+
+// func GetTileCenter(loc Location) Vec3 {
+//   var terrainTile = tiles[loc];
+//   var positionVec2 = pattern.GetTileCenter(loc);
+//   ret Vec3(
+//       positionVec2.x,
+//       positionVec2.y,
+//       terrainTile.elevation * elevationStepHeight);
+// }
+
+// func GetElevationDifference(Location locA, Location locB) int {
+//   ret Math.Abs(
+//       tiles[locA].elevation -
+//       tiles[locB].elevation);
+// }

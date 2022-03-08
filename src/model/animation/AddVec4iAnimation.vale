@@ -1,0 +1,10 @@
+
+struct AddVec4iAnimation {
+  left Vec4iAnimation;
+  right Vec4iAnimation;
+}
+impl Vec4iAnimation for AddVec4iAnimation;
+
+func clone(self &AddVec4iAnimation impl Vec4iAnimation) Vec4iAnimation {
+  AddVec4iAnimation(self.left.clone(), self.right.clone())
+}

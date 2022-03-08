@@ -1,0 +1,215 @@
+
+//struct FadeIn {
+//  fadeInStartTimeMs i64;
+//  fadeInEndTimeMs i64;
+
+//}
+//func FadeIn(i64 fadeInStartTimeMs, i64 fadeInEndTimeMs) FadeIn {
+//  this.fadeInStartTimeMs = fadeInStartTimeMs;
+//  this.fadeInEndTimeMs = fadeInEndTimeMs;
+
+//  vassert(fadeInStartTimeMs >= 0);
+//  vassert(fadeInEndTimeMs >= 0);
+//}
+//struct FadeOut {
+//  fadeOutStartTimeMs i64;
+//  fadeOutEndTimeMs i64;
+//}
+//public FadeOut(
+//    i64 fadeOutStartTimeMs,
+//    i64 fadeOutEndTimeMs) {
+//  this.fadeOutStartTimeMs = fadeOutStartTimeMs;
+//  this.fadeOutEndTimeMs = fadeOutEndTimeMs;
+
+//  // These times are relative to when the overlay is destroyed.
+//  vassert(fadeOutStartTimeMs <= 0);
+//  vassert(fadeOutEndTimeMs <= 0);
+//}
+
+sealed interface IDominoCommand {
+}
+
+impl IDominoCommand for SetupGameCommand;
+struct SetupGameCommand {
+  look_at Vec3i;
+  look_at_offset_to_camera Vec3i;
+  elevation_step_height int;
+  pattern Pattern;
+}
+
+impl IDominoCommand for CreateTileCommand;
+struct CreateTileCommand {
+  newTileId i64;
+  initialTile InitialTile;
+}
+
+//impl IDominoCommand for CreateUnitCommand;
+//struct CreateUnitCommand {
+//  id u64;
+//  initialUnit InitialUnit;
+//}
+
+//impl IDominoCommand for MakePanelCommand;
+//struct MakePanelCommand {
+//  id u64;
+//  panelGXInScreen int;
+//  panelGYInScreen int;
+//  panelGW int;
+//  panelGH int;
+//}
+
+//impl IDominoCommand for ScheduleCloseCommand;
+//struct ScheduleCloseCommand {
+//  viewId u64;
+//  startMsFromNow i64;
+//}
+
+//impl IDominoCommand for RemoveViewCommand;
+//struct RemoveViewCommand {
+//  panelId u64;
+//  viewId u64;
+//}
+
+//impl IDominoCommand for SetOpacityCommand;
+//struct SetOpacityCommand {
+//  viewId u64;
+//  id int;
+//  ratio int;
+//}
+
+//impl IDominoCommand for SetFadeOutCommand;
+//struct SetFadeOutCommand {
+//  id u64;
+//  fadeOut FadeOut;
+//}
+
+//impl IDominoCommand for SetFadeInCommand;
+//struct SetFadeInCommand {
+//  id u64;
+//  fadeIn FadeIn;
+//}
+
+//impl IDominoCommand for AddButtonCommand;
+//struct AddButtonCommand {
+//  newViewId u64;
+//  parentViewId u64;
+//  x int;
+//  y int;
+//  width int;
+//  height int;
+//  z int;
+//  color Vec4i;
+//  borderColor Vec4i;
+//  pressedColor Vec4i;
+//  onClicked u64;
+//  onMouseIn u64;
+//  onMouseOut u64;
+//}
+
+//impl IDominoCommand for AddRectangleCommand;
+//struct AddRectangleCommand {
+//  newViewId u64;
+//  parentViewId u64;
+//  x int;
+//  y int;
+//  width int;
+//  height int;
+//  z int;
+//  color Vec4i;
+//  borderColor Vec4i;
+//}
+
+//impl IDominoCommand for AddSymbolCommand;
+//struct AddSymbolCommand {
+//  newViewId u64;
+//  parentViewId u64;
+//  x int;
+//  y int;
+//  size int;
+//  z int;
+//  color Vec4i;
+//  symbolId SymbolId;
+//  centered bool;
+//}
+
+//impl IDominoCommand for ShowPrismCommand;
+//struct ShowPrismCommand {
+//  tileViewId u64;
+//  prismDescription InitialSymbol;
+//  prismOverlayDescription InitialSymbol;
+//}
+//impl IDominoCommand for FadeInThenOutCommand;
+//struct FadeInThenOutCommand {
+//  tileViewId u64;
+//  inDurationMs i64;
+//  outDurationMs i64;
+//}
+//impl IDominoCommand for ShowRuneCommand;
+//struct ShowRuneCommand {
+//  tileId u64;
+//  symbol InitialSymbol;
+//}
+impl IDominoCommand for SetOverlayCommand;
+struct SetOverlayCommand {
+  tileId i64;
+  symbol Opt<InitialSymbol>;
+}
+//impl IDominoCommand for SetFeatureCommand;
+//struct SetFeatureCommand {
+//  tileId u64;
+//  symbol InitialSymbol;
+//}
+impl IDominoCommand for SetCliffColorCommand;
+struct SetCliffColorCommand {
+  tileViewId i64;
+  frontColor Vec4iAnimation;
+}
+impl IDominoCommand for SetSurfaceColorCommand;
+struct SetSurfaceColorCommand {
+  tileViewId i64;
+  frontColor Vec4iAnimation;
+}
+impl IDominoCommand for SetElevationCommand;
+struct SetElevationCommand {
+  tileViewId i64;
+  elevation int;
+}
+//impl IDominoCommand for RemoveItemCommand;
+//struct RemoveItemCommand {
+//  tileViewId u64;
+//  itemId u64;
+//}
+//impl IDominoCommand for ClearItemsCommand;
+//struct ClearItemsCommand {
+//  tileViewId u64;
+//}
+
+//impl IDominoCommand for AddItemCommand;
+//struct AddItemCommand {
+//  tileViewId u64;
+//  itemId u64;
+//  symbolDescription InitialSymbol;
+//}
+
+//impl IDominoCommand for AddDetailCommand;
+//struct AddDetailCommand {
+//  unitViewId u64;
+//  detailId u64;
+//  symbolDescription InitialSymbol;
+//}
+
+//impl IDominoCommand for RemoveDetailCommand;
+//struct RemoveDetailCommand {
+//  unitViewId u64;
+//  detailId u64;
+//}
+
+struct DestroyTileCommand {
+  tileViewId i64;
+}
+impl IDominoCommand for DestroyTileCommand;
+
+//impl IDominoCommand for DestroyUnitCommand;
+//struct DestroyUnitCommand {
+//  unitId u64;
+//}

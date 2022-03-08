@@ -1,0 +1,150 @@
+
+func ParseLocation(node &JsonObject) Result<Location, str> {
+  group_x_result = expect_obj_member_int(node, "group_x");
+  if group_x_result.is_err() {
+    ret Err<Location, str>(group_x_result.expect_err());
+  }
+  group_x = group_x_result.expect();
+
+  group_y_result = expect_obj_member_int(node, "group_y");
+  if group_y_result.is_err() {
+    ret Err<Location, str>(group_y_result.expect_err());
+  }
+  group_y = group_y_result.expect();
+
+  index_in_group_result = expect_obj_member_int(node, "index_in_group");
+  if index_in_group_result.is_err() {
+    ret Err<Location, str>(index_in_group_result.expect_err());
+  }
+  index_in_group = index_in_group_result.expect();
+
+  ret Ok<Location, str>(Location(group_x, group_y, index_in_group));
+}
+
+func ParseMaybeLocation(node &JsonNode) Result<Opt<Location>, str> {
+  location_null_result = node.as<JsonNull>();
+  if location_null_result.is_ok() {
+    ret Ok<Opt<Location>, str>(None<Location>());
+  }
+
+  location_obj_result = node.as<JsonObject>();
+  if location_obj_result.is_ok() {
+    location_obj = &location_obj_result.expect();
+    location_result = ParseLocation(location_obj);
+    if location_result.is_err() {
+      ret Err<Opt<Location>, str>(location_result.expect_err());
+    }
+    ret Ok<Opt<Location>, str>(Some<Location>((location_result).expect()));
+  }
+
+  ret Err<Opt<Location>, str>("Couldn't parse maybe-location");
+}
+
+func ParseStartRequest(node &JsonObject) Result<StartRequest, str> {
+  maybe_screen_gw = expect_obj_member_int(node, "screen_grid_width");
+  if maybe_screen_gw.is_err() {
+    ret Err<StartRequest, str>(maybe_screen_gw.expect_err());
+  }
+  screen_gw = maybe_screen_gw.expect();
+
+  maybe_screen_gh = expect_obj_member_int(node, "screen_grid_height");
+  if maybe_screen_gh.is_err() {
+    ret Err<StartRequest, str>(maybe_screen_gh.expect_err());
+  }
+  screen_gh = maybe_screen_gh.expect();
+
+  request = StartRequest(screen_gw, screen_gh);
+  ret Ok<StartRequest, str>(request);
+}
+
+func ParseSetHoveredLocationRequest(node &JsonObject) Result<SetHoveredLocationRequest, str> {
+  tile_id_result = expect_obj_member_int(node, "tile_id");
+  if tile_id_result.is_err() {
+    ret Err<SetHoveredLocationRequest, str>(tile_id_result.expect_err());
+  }
+  tile_id = tile_id_result.expect();
+
+  maybe_location_node_result = expect_obj_member(node, "location");
+  if maybe_location_node_result.is_err() {
+    ret Err<SetHoveredLocationRequest, str>(maybe_location_node_result.expect_err());
+  }
+  maybe_location_node = (maybe_location_node_result).expect();
+  maybe_location_result = ParseMaybeLocation(&maybe_location_node);
+  if maybe_location_result.is_err() {
+    ret Err<SetHoveredLocationRequest, str>(maybe_location_result.expect_err());
+  }
+  maybe_location = (maybe_location_result).expect();
+
+  request = SetHoveredLocationRequest(tile_id, maybe_location);
+  ret Ok<SetHoveredLocationRequest, str>(request);
+}
+
+func ParseLocationMouseDownRequest(node &JsonObject) Result<LocationMouseDownRequest, str> {
+  tile_id_result = expect_obj_member_int(node, "tile_id");
+  if tile_id_result.is_err() {
+    ret Err<LocationMouseDownRequest, str>(tile_id_result.expect_err());
+  }
+  tile_id = tile_id_result.expect();
+
+  location_node_result = expect_obj_member(node, "location");
+  if location_node_result.is_err() {
+    ret Err<LocationMouseDownRequest, str>(location_node_result.expect_err());
+  }
+  location_node = (location_node_result).expect();
+
+  location_obj_result = location_node.as<JsonObject>();
+  if location_obj_result.is_err() {
+    ret Err<LocationMouseDownRequest, str>("LocationMouseDown request's location field isn't a location.");
+  }
+  location_obj = (location_obj_result).expect();
+
+  location_result = ParseLocation(&location_obj);
+  if location_result.is_err() {
+    ret Err<LocationMouseDownRequest, str>(location_result.expect_err());
+  }
+  location = (location_result).expect();
+
+  request = LocationMouseDownRequest(tile_id, location);
+  ret Ok<LocationMouseDownRequest, str>(request);
+}
+
+func ParseKeyDownRequest(node &JsonObject) Result<KeyDownRequest, str> {
+  unicode_result = expect_obj_member_int(node, "unicode");
+  if unicode_result.is_err() {
+    ret Err<KeyDownRequest, str>(unicode_result.expect_err());
+  }
+  unicode = unicode_result.expect();
+
+  left_shift_down_result = expect_obj_member_bool(node, "left_shift_down");
+  if left_shift_down_result.is_err() {
+    ret Err<KeyDownRequest, str>(left_shift_down_result.expect_err());
+  }
+  left_shift_down = left_shift_down_result.expect();
+
+  right_shift_down_result = expect_obj_member_bool(node, "right_shift_down");
+  if right_shift_down_result.is_err() {
+    ret Err<KeyDownRequest, str>(right_shift_down_result.expect_err());
+  }
+  right_shift_down = right_shift_down_result.expect();
+
+  left_alt_down_result = expect_obj_member_bool(node, "left_alt_down");
+  if left_alt_down_result.is_err() {
+    ret Err<KeyDownRequest, str>(left_alt_down_result.expect_err());
+  }
+  left_alt_down = left_alt_down_result.expect();
+
+  right_alt_down_result = expect_obj_member_bool(node, "right_alt_down");
+  if right_alt_down_result.is_err() {
+    ret Err<KeyDownRequest, str>(right_alt_down_result.expect_err());
+  }
+  right_alt_down = right_alt_down_result.expect();
+
+  ctrl_down_result = expect_obj_member_bool(node, "ctrl_down");
+  if ctrl_down_result.is_err() {
+    ret Err<KeyDownRequest, str>(ctrl_down_result.expect_err());
+  }
+  ctrl_down = ctrl_down_result.expect();
+
+  request = KeyDownRequest(unicode, left_shift_down, right_shift_down, left_alt_down, right_alt_down, ctrl_down);
+  ret Ok<KeyDownRequest, str>(request);
+}

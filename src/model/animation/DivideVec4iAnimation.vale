@@ -1,0 +1,10 @@
+
+struct DivideVec4iAnimation {
+  left Vec4iAnimation;
+  right Vec4iAnimation;
+}
+impl Vec4iAnimation for DivideVec4iAnimation;
+
+func clone(self &DivideVec4iAnimation impl Vec4iAnimation) Vec4iAnimation {
+  DivideVec4iAnimation(self.left.clone(), self.right.clone())
+}

@@ -1,0 +1,153 @@
+//public interface IDescriptionVisitor {
+//  void visitTileTopColor(TopColorDescriptionForIDescription color);
+//  void visitTileSideColor(SideColorDescriptionForIDescription color);
+//  void visitTileOverlay(OverlayDescriptionForIDescription symbol);
+//  void visitTileFeature(FeatureDescriptionForIDescription symbol);
+//  void visitUnitDominoShape(DominoShapeDescriptionForIDescription domino);
+//  void visitUnitFace(FaceDescriptionForIDescription symbol);
+//  void visitUnitDetail(DetailDescriptionForIDescription symbol);
+//  void visitTileItem(ItemDescriptionForIDescription symbol);
+//}
+
+interface IDescription { }
+
+impl IDescription for TopColorDescriptionForIDescription;
+struct TopColorDescriptionForIDescription {
+  color Vec4iAnimation;
+}
+impl IDescription for SideColorDescriptionForIDescription;
+struct SideColorDescriptionForIDescription {
+  color Vec4iAnimation;
+}
+//impl IDescription for OutlineColorDescriptionForIDescription;
+//struct OutlineColorDescriptionForIDescription {
+//  color Color;
+//}
+impl IDescription for OverlayDescriptionForIDescription;
+struct OverlayDescriptionForIDescription {
+  symbol InitialSymbol;
+}
+impl IDescription for FeatureDescriptionForIDescription;
+struct FeatureDescriptionForIDescription {
+  symbol InitialSymbol;
+}
+impl IDescription for FaceDescriptionForIDescription;
+struct FaceDescriptionForIDescription {
+  symbol InitialSymbol;
+}
+impl IDescription for DominoShapeDescriptionForIDescription;
+struct DominoShapeDescriptionForIDescription {
+  symbol InitialSymbol;
+}
+impl IDescription for ItemDescriptionForIDescription;
+struct ItemDescriptionForIDescription {
+  symbol InitialSymbol;
+}
+impl IDescription for DetailDescriptionForIDescription;
+struct DetailDescriptionForIDescription {
+  symbol InitialSymbol;
+}
+
+struct MemberToViewMapper {
+  entries HashMap<str, List<IDescription>, StrHasher, StrEquator>;
+}
+
+func getEntries(self &MemberToViewMapper, name str) *List<IDescription> {
+  if not self.entries.ContainsKey(name) {
+    panic("No entries for member: " + name);
+  }
+  ret self.entries.get(name).get("derped j");
+}
+
+func MemberToViewMapperLoadMap(
+    resourcesPath str,
+    filename str)
+MemberToViewMapper {
+  filePath = Path(resourcesPath)./(filename);
+  jsonStr = filePath.readAsString();
+
+  entries =
+      HashMap<str, List<IDescription>, StrHasher, StrEquator>(
+          StrHasher(), StrEquator());
+
+  maybe_root_node = jsonToNode(jsonStr.slice());
+  if maybe_root_node.is_err() {
+    panic("Couldn't parse vivimap: " + maybe_root_node.expect_err());
+  }
+  root_node = (maybe_root_node).expect();
+
+  maybe_root_obj = (root_node).as<JsonObject>();
+  if maybe_root_obj.is_err() {
+    panic("Request wasn't json object!");
+  }
+  root_obj = (maybe_root_obj).expect();
+
+  foreach [memberName, memberNode &!JsonNode] in root_obj.fields {
+
+    memberObjResult = memberNode!.as<JsonObject>();
+    if memberObjResult.is_err() {
+      panic("Root member wasn't json object!");
+    }
+    memberObj = &!(memberObjResult).expect();
+
+    memberEntries =
+      if (entries.ContainsKey(memberName)) {
+        &entries.get(memberName).get("derped k")
+      } else {
+        newList = List<IDescription>();
+        result = &newList;
+        entries!.add(memberName, newList);
+        result
+      };
+
+    maybe_surface_color = memberObj.fields.get("surface_color");
+    if (not maybe_surface_color.isEmpty()) {
+      surface_color = maybe_surface_color.get("derped l");
+      memberEntries!.add(TopColorDescriptionForIDescription(ParseColorAnim(&surface_color)));
+      //memberObj.fields!.remove("surface_color");
+    }
+
+    maybe_wall_color = memberObj.fields.get("wall_color");
+    if (not maybe_wall_color.isEmpty()) {
+      wall_color = maybe_wall_color.get("derped m");
+      memberEntries!.add(SideColorDescriptionForIDescription(ParseColorAnim(&wall_color)));
+      //memberObj.fields!.remove("wall_color");
+    }
+
+    maybe_overlay = memberObj.fields.get("overlay");
+    if (not maybe_overlay.isEmpty()) {
+      overlay = maybe_overlay.get("derped n");
+      memberEntries!.add(OverlayDescriptionForIDescription(ParseInitialSymbol(&overlay)));
+      //memberObj.fields!.remove("wall_color");
+    }
+
+    //if (expect_member_obj(memberObj, "overlay", out overlayObj)) {
+    //  memberEntries!.add(OverlayDescriptionForIDescription(ParseInitialSymbol(overlayObj)));
+    //  memberObj.fields!.remove("overlay");
+    //}
+    //if (expect_member_obj(memberObj, "feature", out featureObj)) {
+    //  memberEntries!.add(FeatureDescriptionForIDescription(ParseInitialSymbol(featureObj)));
+    //  memberObj.fields!.remove("feature");
+    //}
+    //if (expect_member_obj(memberObj, "item", out itemObj)) {
+    //  memberEntries!.add(ItemDescriptionForIDescription(ParseInitialSymbol(itemObj)));
+    //  memberObj.fields!.remove("item");
+    //}
+    //if (expect_member_obj(memberObj, "detail", out detailObj)) {
+    //  memberEntries!.add(DetailDescriptionForIDescription(ParseInitialSymbol(detailObj)));
+    //  memberObj.fields!.remove("detail");
+    //}
+    //if (expect_member_obj(memberObj, "unit", out unitObj)) {
+    //  faceSymbol = ParseInitialSymbol(ExpectMemberObject(unitObj, "face"));
+    //  memberEntries!.add(FaceDescriptionForIDescription(faceSymbol));
+    //  dominoSymbol = ParseInitialSymbol(ExpectMemberObject(unitObj, "domino"));
+    //  memberEntries!.add(DominoShapeDescriptionForIDescription(dominoSymbol));
+    //  memberObj.fields!.remove("unit");
+    //}
+
+    //if memberObj.fields.len() > 0 {
+    //  panic("Unknown key: " + memberObj.fields.KeysIter()!.next().get());
+    //}
+  }
+  ret MemberToViewMapper(entries);
+}

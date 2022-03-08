@@ -1,0 +1,10 @@
+
+struct InitialTile {
+  location Location;
+  elevation int;
+  topColor Vec4iAnimation;
+  sideColor Vec4iAnimation;
+  maybeOverlaySymbol Opt<InitialSymbol>;
+  //maybeFeatureSymbol InitialSymbol;
+  //itemIdToSymbol List<[ulong, InitialSymbol]>;
+}
