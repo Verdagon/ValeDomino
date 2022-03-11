@@ -43,11 +43,11 @@ struct CreateTileCommand {
   initialTile InitialTile;
 }
 
-//impl IDominoCommand for CreateUnitCommand;
-//struct CreateUnitCommand {
-//  id u64;
-//  initialUnit InitialUnit;
-//}
+impl IDominoCommand for CreateUnitCommand;
+struct CreateUnitCommand {
+  unitId i64;
+  initialUnit InitialUnit;
+}
 
 //impl IDominoCommand for MakePanelCommand;
 //struct MakePanelCommand {
@@ -154,11 +154,11 @@ struct SetOverlayCommand {
   tileId i64;
   symbol Opt<InitialSymbol>;
 }
-//impl IDominoCommand for SetFeatureCommand;
-//struct SetFeatureCommand {
-//  tileId u64;
-//  symbol InitialSymbol;
-//}
+impl IDominoCommand for SetFeatureCommand;
+struct SetFeatureCommand {
+  tileId i64;
+  symbol Opt<InitialSymbol>;
+}
 impl IDominoCommand for SetCliffColorCommand;
 struct SetCliffColorCommand {
   tileViewId i64;
@@ -174,42 +174,42 @@ struct SetElevationCommand {
   tileViewId i64;
   elevation int;
 }
-//impl IDominoCommand for RemoveItemCommand;
-//struct RemoveItemCommand {
-//  tileViewId u64;
-//  itemId u64;
-//}
-//impl IDominoCommand for ClearItemsCommand;
-//struct ClearItemsCommand {
-//  tileViewId u64;
-//}
+impl IDominoCommand for RemoveItemCommand;
+struct RemoveItemCommand {
+  tileViewId i64;
+  itemId i64;
+}
+impl IDominoCommand for ClearItemsCommand;
+struct ClearItemsCommand {
+  tileViewId i64;
+}
 
-//impl IDominoCommand for AddItemCommand;
-//struct AddItemCommand {
-//  tileViewId u64;
-//  itemId u64;
-//  symbolDescription InitialSymbol;
-//}
+impl IDominoCommand for AddItemCommand;
+struct AddItemCommand {
+  tileViewId i64;
+  itemId i64;
+  symbol InitialSymbol;
+}
 
-//impl IDominoCommand for AddDetailCommand;
-//struct AddDetailCommand {
-//  unitViewId u64;
-//  detailId u64;
-//  symbolDescription InitialSymbol;
-//}
+impl IDominoCommand for AddDetailCommand;
+struct AddDetailCommand {
+  unitViewId i64;
+  detailId i64;
+  symbol InitialSymbol;
+}
 
-//impl IDominoCommand for RemoveDetailCommand;
-//struct RemoveDetailCommand {
-//  unitViewId u64;
-//  detailId u64;
-//}
+impl IDominoCommand for RemoveDetailCommand;
+struct RemoveDetailCommand {
+  unitViewId i64;
+  detailId i64;
+}
 
 struct DestroyTileCommand {
   tileViewId i64;
 }
 impl IDominoCommand for DestroyTileCommand;
 
-//impl IDominoCommand for DestroyUnitCommand;
-//struct DestroyUnitCommand {
-//  unitId u64;
-//}
+impl IDominoCommand for DestroyUnitCommand;
+struct DestroyUnitCommand {
+  unitId i64;
+}

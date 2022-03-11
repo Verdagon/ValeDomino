@@ -4,7 +4,7 @@
 //  void visitTileOverlay(OverlayDescriptionForIDescription symbol);
 //  void visitTileFeature(FeatureDescriptionForIDescription symbol);
 //  void visitUnitDominoShape(DominoShapeDescriptionForIDescription domino);
-//  void visitUnitFace(FaceDescriptionForIDescription symbol);
+//  void visitUnitFace(DominoFaceDescriptionForIDescription symbol);
 //  void visitUnitDetail(DetailDescriptionForIDescription symbol);
 //  void visitTileItem(ItemDescriptionForIDescription symbol);
 //}
@@ -31,8 +31,8 @@ impl IDescription for FeatureDescriptionForIDescription;
 struct FeatureDescriptionForIDescription {
   symbol InitialSymbol;
 }
-impl IDescription for FaceDescriptionForIDescription;
-struct FaceDescriptionForIDescription {
+impl IDescription for DominoFaceDescriptionForIDescription;
+struct DominoFaceDescriptionForIDescription {
   symbol InitialSymbol;
 }
 impl IDescription for DominoShapeDescriptionForIDescription;
@@ -74,13 +74,13 @@ MemberToViewMapper {
   if maybe_root_node.is_err() {
     panic("Couldn't parse vivimap: " + maybe_root_node.expect_err());
   }
-  root_node = (maybe_root_node).expect();
+  root_node = (maybe_root_node).expect("bork f");
 
   maybe_root_obj = (root_node).as<JsonObject>();
   if maybe_root_obj.is_err() {
     panic("Request wasn't json object!");
   }
-  root_obj = (maybe_root_obj).expect();
+  root_obj = (maybe_root_obj).expect("bork g");
 
   foreach [memberName, memberNode &!JsonNode] in root_obj.fields {
 
@@ -88,7 +88,7 @@ MemberToViewMapper {
     if memberObjResult.is_err() {
       panic("Root member wasn't json object!");
     }
-    memberObj = &!(memberObjResult).expect();
+    memberObj = &!(memberObjResult).expect("bork h");
 
     memberEntries =
       if (entries.ContainsKey(memberName)) {
@@ -121,29 +121,40 @@ MemberToViewMapper {
       //memberObj.fields!.remove("wall_color");
     }
 
-    //if (expect_member_obj(memberObj, "overlay", out overlayObj)) {
-    //  memberEntries!.add(OverlayDescriptionForIDescription(ParseInitialSymbol(overlayObj)));
-    //  memberObj.fields!.remove("overlay");
-    //}
-    //if (expect_member_obj(memberObj, "feature", out featureObj)) {
-    //  memberEntries!.add(FeatureDescriptionForIDescription(ParseInitialSymbol(featureObj)));
-    //  memberObj.fields!.remove("feature");
-    //}
-    //if (expect_member_obj(memberObj, "item", out itemObj)) {
-    //  memberEntries!.add(ItemDescriptionForIDescription(ParseInitialSymbol(itemObj)));
-    //  memberObj.fields!.remove("item");
-    //}
-    //if (expect_member_obj(memberObj, "detail", out detailObj)) {
-    //  memberEntries!.add(DetailDescriptionForIDescription(ParseInitialSymbol(detailObj)));
-    //  memberObj.fields!.remove("detail");
-    //}
-    //if (expect_member_obj(memberObj, "unit", out unitObj)) {
-    //  faceSymbol = ParseInitialSymbol(ExpectMemberObject(unitObj, "face"));
-    //  memberEntries!.add(FaceDescriptionForIDescription(faceSymbol));
-    //  dominoSymbol = ParseInitialSymbol(ExpectMemberObject(unitObj, "domino"));
-    //  memberEntries!.add(DominoShapeDescriptionForIDescription(dominoSymbol));
-    //  memberObj.fields!.remove("unit");
-    //}
+    maybe_feature = memberObj.fields.get("feature");
+    if (not maybe_feature.isEmpty()) {
+      feature = maybe_feature.get("derped n");
+      memberEntries!.add(FeatureDescriptionForIDescription(ParseInitialSymbol(&feature)));
+      //memberObj.fields!.remove("wall_color");
+    }
+
+    maybe_item = memberObj.fields.get("item");
+    if (not maybe_item.isEmpty()) {
+      item = maybe_item.get("derped n");
+      memberEntries!.add(ItemDescriptionForIDescription(ParseInitialSymbol(&item)));
+      //memberObj.fields!.remove("wall_color");
+    }
+
+    maybe_detail = memberObj.fields.get("detail");
+    if (not maybe_detail.isEmpty()) {
+      detail = maybe_detail.get("derped n");
+      memberEntries!.add(DetailDescriptionForIDescription(ParseInitialSymbol(&detail)));
+      //memberObj.fields!.remove("wall_color");
+    }
+
+    maybe_unit = memberObj.fields.get("unit");
+    if (not maybe_unit.isEmpty()) {
+      unit = &maybe_unit.get("derped n").as<JsonObject>().expect("unit is not an object!");
+      faceSymbol =
+          ParseInitialSymbol(
+              &unit.fields.get("face").get("Unit doesn't have face field!"));
+      memberEntries!.add(DominoFaceDescriptionForIDescription(faceSymbol));
+      dominoSymbol =
+          ParseInitialSymbol(
+              &unit.fields.get("domino").get("Unit doesn't have domino field!"));
+      memberEntries!.add(DominoShapeDescriptionForIDescription(dominoSymbol));
+      //memberObj.fields!.remove("wall_color");
+    }
 
     //if memberObj.fields.len() > 0 {
     //  panic("Unknown key: " + memberObj.fields.KeysIter()!.next().get());

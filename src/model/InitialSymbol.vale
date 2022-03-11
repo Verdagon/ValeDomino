@@ -3,6 +3,12 @@ func NoOutline() int { 0 }
 func OuterOutline() int { 1 }
 func CenteredOutline() int { 2 }
 
+func OutlineModeToString(mode int) str {
+  if mode == NoOutline() { "none" }
+  else if mode == CenteredOutline() { "centered" }
+  else if mode == OuterOutline() { "outer" }
+  else { panic("Unknown outline mode: {mode}") }
+}
 
 struct InitialSymbolGlyph {
   symbolId SymbolId;

@@ -75,7 +75,7 @@ func parseSymbolId(obj &JsonObject) SymbolId {
 func ParseColor(node &JsonNode) Vec4i {
   arr_result = node.as<JsonArray>();
   if arr_result.is_ok() {
-    arr = &(arr_result).expect();
+    arr = &(arr_result).expect("bork a");
     if (arr.elements.len() != 3 and arr.elements.len() != 4) {
       panic("Color array had {arr.elements.len()} elements, expected 3 or 4.");
     }
@@ -95,7 +95,7 @@ func ParseColor(node &JsonNode) Vec4i {
 
   obj_result = node.as<JsonObject>();
   if obj_result.is_ok() {
-    obj = &(obj_result).expect();
+    obj = &(obj_result).expect("bork b");
 
     red = expect_obj_member_int(obj, "red").expect("Color obj field 'red' not an integer!");
     green = expect_obj_member_int(obj, "green").expect("Color obj field 'green' not an integer!");
@@ -116,17 +116,17 @@ func ParseColor(node &JsonNode) Vec4i {
 func ParseColorAnim(node &JsonNode) Vec4iAnimation {
   arr_result = node.as<JsonArray>();
   if arr_result.is_ok() {
-    arr = (arr_result).expect();
+    arr = (arr_result).expect("bork c");
     ret ConstantVec4iAnimation(ParseColor(node));
   }
 
   obj_result = node.as<JsonObject>();
   if obj_result.is_ok() {
-    obj = &(obj_result).expect();
+    obj = &(obj_result).expect("bork d");
 
     type_result = expect_obj_member_str(obj, "type");
     if type_result.is_ok() {
-      type = (type_result).expect();
+      type = (type_result).expect("bork e");
       if type == "multiply" {
         ret MultiplyVec4iAnimation(
             ExpectMemberColorAnim(obj, "left"),

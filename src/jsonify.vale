@@ -76,6 +76,34 @@ func JsonNode(self &InitialTile) JsonNode {
   ret node;
 }
 
+func JsonNode(self &(i64, InitialSymbol)) JsonNode {
+  node = JsonObject();
+  node.fields!.add("key", self.0.JsonNode());
+  node.fields!.add("value", self.1.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &InitialUnit) JsonNode {
+  node = JsonObject();
+  node.fields!.add("location", self.location.JsonNode());
+  node.fields!.add("domino", self.dominoSymbol.JsonNode());
+  node.fields!.add("face", self.faceSymbol.JsonNode());
+  node.fields!.add(
+      "id_to_detail_symbol",
+      JsonArray(
+          toVaryArray(
+              self.idToDetailSymbol.map(([id, symbol]) => {
+                entryNode = JsonObject();
+                entryNode.fields!.add("id", id.JsonNode());
+                entryNode.fields!.add("symbol", symbol.JsonNode());
+                x JsonNode = entryNode;
+                x
+              }))));
+  node.fields!.add("hp_percent", self.hpPercent.JsonNode());
+  node.fields!.add("mp_percent", self.mpPercent.JsonNode());
+  ret node;
+}
+
 func JsonNode(self &InitialSymbol) JsonObject {
   node = JsonObject();
   node.fields!.add("glyph", self.glyph.JsonNode());
@@ -102,7 +130,7 @@ func JsonNode(self &SymbolId) JsonNode {
 
 func JsonNode(self &InitialSymbolOutline) JsonNode {
   node = JsonObject();
-  node.fields!.add("mode", self.mode.JsonNode());
+  node.fields!.add("type", OutlineModeToString(self.mode).JsonNode());
   node.fields!.add("color", self.color.JsonNode());
   ret node;
 }
@@ -120,6 +148,13 @@ func JsonNode(self &CreateTileCommand impl IDominoCommand) JsonNode {
   node.fields!.add("command_type", "CreateTile".JsonNode());
   node.fields!.add("tile_id", self.newTileId.JsonNode());
   node.fields!.add("initial_tile", self.initialTile.JsonNode());
+  ret node;
+}
+func JsonNode(self &CreateUnitCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "CreateUnit".JsonNode());
+  node.fields!.add("unit_id", self.unitId.JsonNode());
+  node.fields!.add("initial_unit", self.initialUnit.JsonNode());
   ret node;
 }
 func JsonNode(self &SetupGameCommand impl IDominoCommand) JsonNode {
@@ -214,3 +249,61 @@ func JsonNode(self &PatternCornerAdjacency) JsonNode {
   ret node;
 }
 
+func JsonNode(self &RemoveDetailCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "RemoveDetail".JsonNode());
+  node.fields!.add("unit_id", self.unitViewId.JsonNode());
+  node.fields!.add("detail_id", self.detailId.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &DestroyUnitCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "DestroyUnit".JsonNode());
+  node.fields!.add("unit_id", self.unitId.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &RemoveItemCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "RemoveItem".JsonNode());
+  node.fields!.add("tile_id", self.tileViewId.JsonNode());
+  node.fields!.add("item_id", self.itemId.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &AddItemCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "AddItem".JsonNode());
+  node.fields!.add("tile_id", self.tileViewId.JsonNode());
+  node.fields!.add("item_id", self.itemId.JsonNode());
+  node.fields!.add("symbol", self.symbol.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &SetFeatureCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "SetFeature".JsonNode());
+  node.fields!.add("tile_id", self.tileId.JsonNode());
+  node.fields!.add(
+      "symbol",
+      if self.symbol.isEmpty() { JsonNull() }
+      else { (&self.symbol.get()).JsonNode() });
+  ret node;
+}
+
+func JsonNode(self &ClearItemsCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "ClearItems".JsonNode());
+  node.fields!.add("tile_id", self.tileViewId.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &AddDetailCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "AddDetail".JsonNode());
+  node.fields!.add("unit_id", self.unitViewId.JsonNode());
+  node.fields!.add("detail_id", self.detailId.JsonNode());
+  node.fields!.add("symbol", self.symbol.JsonNode());
+  ret node;
+}

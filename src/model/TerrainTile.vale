@@ -1,6 +1,0 @@
-
-struct TerrainTile {
-  location Location;
-  elevation! int;
-  members List<str>;
-}

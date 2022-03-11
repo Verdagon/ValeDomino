@@ -52,7 +52,7 @@ func GameToDominoConnection() GameToDominoConnection {
 //       return e;
 //     }
 
-//     public void TriggerEvent(ulong id) {
+//     func TriggerEvent(ulong id) {
 //       if (events.TryGetValue(id, out var e)) {
 //         e.Trigger();
 //       } else {
@@ -60,19 +60,20 @@ func GameToDominoConnection() GameToDominoConnection {
 //       }
 //     }
 
-func create_tile(self &!GameToDominoConnection, initialTile InitialTile) i64 {
+func CreateTile(self &!GameToDominoConnection, initialTile InitialTile) i64 {
   id = self.next_id;
   set self.next_id = self.next_id + 1i64;
   self.commands!.add(CreateTileCommand(id, initialTile));
   ret id;
 }
 
-// func create_unit(initialUnit InitialUnit) {
-//   id = nextId;
-//   set nextId = nextId + 1;
-//   domino.commands!.add(CreateUnitCommand(id, initialUnit));
-//   ret id;
-// }
+
+func CreateUnit(self &!GameToDominoConnection, initialUnit InitialUnit) i64 {
+  id = self.next_id;
+  set self.next_id = self.next_id + 1i64;
+  self.commands!.add(CreateUnitCommand(id, initialUnit));
+  ret id;
+}
 
 func SetupGame(
   self &!GameToDominoConnection,
@@ -198,9 +199,9 @@ func SetupGame(
 func SetOverlay(self &!GameToDominoConnection, tileViewId i64, maybeOverlay Opt<InitialSymbol>) {
   self.commands!.add(SetOverlayCommand(tileViewId, maybeOverlay));
 }
-//     public void SetFeature(ulong tileViewId, InitialSymbol maybeFeature) {
-//       commands.Add(new SetFeatureCommand(tileViewId, maybeFeature));
-//     }
+func SetFeature(self &!GameToDominoConnection, tileViewId i64, maybeFeature Opt<InitialSymbol>) {
+  self.commands!.add(SetFeatureCommand(tileViewId, maybeFeature));
+}
 func SetSurfaceColor(self &!GameToDominoConnection, tileViewId i64, frontColor Vec4iAnimation) {
   self.commands!.add(SetSurfaceColorCommand(tileViewId, frontColor));
 }
@@ -210,22 +211,22 @@ func SetCliffColor(self &!GameToDominoConnection, tileViewId i64, cliffColor Vec
 func SetElevation(self &!GameToDominoConnection, tileViewId i64, elevation int) {
   self.commands!.add(SetElevationCommand(tileViewId, elevation));
 }
-//     public void RemoveItem(ulong tileViewId, ulong id) {
-//       commands.Add(new RemoveItemCommand(tileViewId, id));
-//     }
-//     public void ClearItems(ulong tileViewId) {
-//       commands.Add(new ClearItemsCommand(tileViewId));
-//     }
-//     public void AddItem(ulong tileViewId, ulong itemId, InitialSymbol symbolDescription) {
-//       commands.Add(new AddItemCommand(tileViewId, itemId, symbolDescription));
-//     }
+func RemoveItem(self &!GameToDominoConnection, tileViewId i64, id i64) {
+  self.commands!.add(RemoveItemCommand(tileViewId, id));
+}
+func ClearItems(self &!GameToDominoConnection, tileViewId i64) {
+  self.commands!.add(ClearItemsCommand(tileViewId));
+}
+func AddItem(self &!GameToDominoConnection, tileViewId i64, itemId i64, symbolDescription InitialSymbol) {
+  self.commands!.add(AddItemCommand(tileViewId, itemId, symbolDescription));
+}
 func DestroyTile(self &!GameToDominoConnection, tileViewId i64) {
   self.commands!.add(DestroyTileCommand(tileViewId));
 }
 
-//     public void DestroyUnit(ulong unitViewId) {
-//       commands.Add(new DestroyUnitCommand(unitViewId));
-//     }
+func DestroyUnit(self &!GameToDominoConnection, unitViewId i64) {
+  self.commands!.add(DestroyUnitCommand(unitViewId));
+}
 
 
 func TakeCommands(self &!GameToDominoConnection) Array<mut, JsonNode> {
