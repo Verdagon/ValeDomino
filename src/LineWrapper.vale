@@ -1,0 +1,42 @@
+
+func Wrap(text StrSlice, margin int) []StrSlice {
+  startingLines = text.split("\n");
+  resultingLines = List<StrSlice>();
+  foreach startingLine in &startingLines {
+    wrappedLines = WrapLine(startingLine, margin);
+    foreach line in &wrappedLines {
+      resultingLines!.add(line);
+    }
+    if (wrappedLines.len() == 0) {
+      resultingLines!.add("".slice());
+    }
+  }
+  ret (resultingLines).toArray();
+}
+
+func WrapLine(untrimmed_text StrSlice, margin int)
+[]StrSlice {
+  start = 0;
+  end = 0;
+  lines = List<StrSlice>();
+  text = untrimmed_text.trim();
+
+  while set end = start + margin; end < text.len() {
+    while text.charAt(end) != " " and end > start {
+      set end = end - 1;
+    }
+
+    if (end == start) {
+      set end = start + margin;
+    }
+
+    lines!.add(text.slice(start, end - start));
+    set start = end + 1;
+  }
+
+  if start < text.len() {
+    lines!.add(text.slice(start));
+  }
+
+  ret (lines).toArray();
+}

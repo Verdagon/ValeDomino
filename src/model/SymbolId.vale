@@ -8,8 +8,8 @@ func clone(self &SymbolId) SymbolId {
 }
 
 //public override int GetHashCode() {
-//  return fontName.GetHashCode() + unicode * 73;
+//  ret fontName.GetHashCode() + unicode * 73;
 //}
 //public override bool Equals(object obj) {
-//  return base.Equals(obj);
+//  ret base.Equals(obj);
 //}

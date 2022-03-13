@@ -27,36 +27,40 @@ func GameToDominoConnection() GameToDominoConnection {
       IntHasher(), IntEquator()))
 }
 
-//     public ulong MakePanel(
-//         int panelGXInScreen,
-//         int panelGYInScreen,
-//         int panelGW,
-//         int panelGH) {
-//       ulong id = nextId++;
-//       commands.Add(new MakePanelCommand(id, panelGXInScreen, panelGYInScreen, panelGW, panelGH));
-//       return id;
-//       // return new Panel(this, id, panelGW, panelGH);
-//     }
+func MakePanel(
+    self &!GameToDominoConnection,
+    panelGXInScreen int,
+    panelGYInScreen int,
+    panelGW int,
+    panelGH int)
+i64 {
+  id = self.next_id;
+  set self.next_id = self.next_id + 1i64;
+  self.commands!.add(MakePanelCommand(id, panelGXInScreen, panelGYInScreen, panelGW, panelGH));
+  ret id;
+  // ret Panel(this, id, panelGW, panelGH);
+}
 
 //     public IEvent MakeEvent(IEventHandler handler) {
-//       var id = nextId++;
-//       var e = new Event(id, handler);
+//       id = self.next_id;
+//       set self.next_id = self.next_id + 1i64;
+//       var e = Event(id, handler);
 //       events.Add(id, e);
-//       return e;
+//       ret e;
 //     }
 //     public Event DestroyEvent(IEvent ie) {
 //       var e = ie as Event;
 //       Asserts.Assert(e != null);
 //       events.Remove(e.id);
 //       e.Dispose();
-//       return e;
+//       ret e;
 //     }
 
-//     func TriggerEvent(ulong id) {
+//     func TriggerEvent(i64 id) {
 //       if (events.TryGetValue(id, out var e)) {
 //         e.Trigger();
 //       } else {
-//         throw new Exception("Unknown event triggered: " + id);
+//         throw Exception("Unknown event triggered: " + id);
 //       }
 //     }
 
@@ -82,49 +86,58 @@ func SetupGame(
   elevationStepHeight int,
   pattern Pattern)
 {
-  //id = self.next_id;
-  //set self.next_id = self.next_id + 1;
   self.commands!.add(SetupGameCommand(cameraPosition, lookatOffsetToCamera, elevationStepHeight, pattern));
-  //ret id;
 }
 
-//     public void ScheduleClose(ulong viewId, long startMsFromNow) {
-//       commands.Add(new ScheduleCloseCommand(viewId, startMsFromNow));
+func MoveCamera(
+  self &!GameToDominoConnection,
+  cameraPosition Vec3i,
+  lookatOffsetToCamera Vec3i,
+  duration int)
+{
+  self.commands!.add(MoveCameraCommand(cameraPosition, lookatOffsetToCamera, duration));
+}
+
+func ScheduleClose(self &!GameToDominoConnection, viewId i64, startMsFromNow i64) {
+  self.commands!.add(ScheduleCloseCommand(viewId, startMsFromNow));
+}
+
+func RemoveView(self &!GameToDominoConnection, viewId i64) {
+  self.commands!.add(RemoveViewCommand(viewId));
+}
+
+//     func SetOpacity(i64 viewId, int id, int percent) {
+//       self.commands!.add(SetOpacityCommand(viewId, id, percent));
 //     }
 
-//     public void RemoveView(ulong viewId) {
-//       commands.Add(new RemoveViewCommand(viewId));
-//     }
+func SetFadeOut(self &!GameToDominoConnection, id i64, fadeOut FadeOut) {
+  self.commands!.add(SetFadeOutCommand(id, fadeOut));
+}
 
-//     public void SetOpacity(ulong viewId, int id, int percent) {
-//       commands.Add(new SetOpacityCommand(viewId, id, percent));
-//     }
+func SetFadeIn(self &!GameToDominoConnection, id i64, fadeIn FadeIn) {
+  self.commands!.add(SetFadeInCommand(id, fadeIn));
+}
 
-//     public void SetFadeOut(ulong id, FadeOut fadeOut) {
-//       commands.Add(new SetFadeOutCommand(id, fadeOut));
-//     }
+func AddString(
+    self &!GameToDominoConnection,
+    parentViewId i64,
+    x int,
+    y int,
+    maxWide int,
+    color Vec4i,
+    fontName str,
+    s StrSlice)
+[]i64 {
+  newViewIds = List<i64>();
+  foreach i in range(0, s.len()) {
+    unicode = s.charAt(i).toAscii();
+    newViewIds!.add(self!.AddSymbol(parentViewId, x + i, y, 1, 1, color, SymbolId(fontName, unicode), true));
+  }
+  ret (newViewIds).toArray();
+}
 
-//     public void SetFadeIn(ulong id, FadeIn fadeIn) {
-//       commands.Add(new SetFadeInCommand(id, fadeIn));
-//     }
-
-//     public List<ulong> AddString(
-//         ulong parentViewId,
-//         int x,
-//         int y,
-//         int maxWide,
-//         Vec4i color,
-//         string fontName,
-//         string str) {
-//       List<ulong> newViewIds = new List<ulong>();
-//       for (int i = 0; i < str.Length; i++) {
-//         newViewIds.Add(AddSymbol(parentViewId, x + i, y, 1, 1, color, new SymbolId(fontName, char.ConvertToUtf32(str[i].ToString(), 0)), true));
-//       }
-//       return newViewIds;
-//     }
-
-//     public ulong AddButton(
-//         ulong parentViewId,
+//     public i64 AddButton(
+//         i64 parentViewId,
 //         int x,
 //         int y,
 //         int width,
@@ -143,58 +156,65 @@ func SetupGame(
 //       var onMouseOut = onMouseOutI as Event;
 //       Asserts.Assert(onMouseOut != null);
       
-//       ulong newViewId = nextId++;
-//       commands.Add(
-//           new AddButtonCommand(
+// id = self.next_id;
+//  set self.next_id = self.next_id + 1i64;
+//       self.commands!.add(
+//           AddButtonCommand(
 //               newViewId, parentViewId, x, y, width, height, z, color, borderColor, pressedColor, onClicked.id,
 //               onMouseIn.id, onMouseOut.id));
-//       return newViewId;
+//       ret newViewId;
 //     }
 
-//     // public ulong AddFullscreenRect(ulong parentViewId, Color color) {
-//     //   ulong newViewId = nextId++;
-//     //   commands.Add(new AddFullscreenRectCommand(newViewId, parentViewId, color));
-//     //   return newViewId;
+//     // public i64 AddFullscreenRect(i64 parentViewId, Color color) {
+// id = self.next_id;
+//  set self.next_id = self.next_id + 1i64;
+//     //   self.commands!.add(AddFullscreenRectCommand(newViewId, parentViewId, color));
+//     //   ret newViewId;
 //     // }
 
-//     public ulong AddRectangle(
-//         ulong parentViewId,
-//         int x,
-//         int y,
-//         int width,
-//         int height,
-//         int z,
-//         Vec4i color,
-//         Vec4i borderColor) {
-//       ulong newViewId = nextId++;
-//       commands.Add(
-//           new AddRectangleCommand(newViewId, parentViewId, x, y, width, height, z, color, borderColor));
-//       return newViewId;
-//     }
+func AddRectangle(
+    self &!GameToDominoConnection,
+    parentViewId i64,
+    x int,
+    y int,
+    width int,
+    height int,
+    z int,
+    color Vec4i,
+    borderColor Vec4i)
+i64 {
+  newViewId = self.next_id;
+  set self.next_id = self.next_id + 1i64;
+  self.commands!.add(
+      AddRectangleCommand(newViewId, parentViewId, x, y, width, height, z, color, borderColor));
+  ret newViewId;
+}
 
-//     public ulong AddSymbol(
-//         ulong parentViewId,
-//         int x,
-//         int y,
-//         int size,
-//         int z,
-//         Vec4i color,
-//         SymbolId symbol,
-//         bool centered) {
-//       ulong newViewId = nextId++;
-//       commands.Add(new AddSymbolCommand(newViewId, parentViewId, x, y, size, z, color, symbol, centered));
-//       return newViewId;
+func AddSymbol(
+    self &!GameToDominoConnection,
+    parentViewId i64,
+    x int,
+    y int,
+    size int,
+    z int,
+    color Vec4i,
+    symbol SymbolId,
+    centered bool)
+i64 {
+  newViewId = self.next_id;
+  set self.next_id = self.next_id + 1i64;
+  self.commands!.add(AddSymbolCommand(newViewId, parentViewId, x, y, size, z, color, symbol, centered));
+  ret newViewId;
+}
+
+//     func ShowPrism(i64 tileViewId, InitialSymbol prismDescription, InitialSymbol prismOverlayDescription) {
+//       self.commands!.add(ShowPrismCommand(tileViewId, prismDescription, prismOverlayDescription));
 //     }
-    
-    
-//     public void ShowPrism(ulong tileViewId, InitialSymbol prismDescription, InitialSymbol prismOverlayDescription) {
-//       commands.Add(new ShowPrismCommand(tileViewId, prismDescription, prismOverlayDescription));
+//     func FadeInThenOut(i64 tileViewId, long inDurationMs, long outDurationMs) {
+//       self.commands!.add(FadeInThenOutCommand(tileViewId, inDurationMs, outDurationMs));
 //     }
-//     public void FadeInThenOut(ulong tileViewId, long inDurationMs, long outDurationMs) {
-//       commands.Add(new FadeInThenOutCommand(tileViewId, inDurationMs, outDurationMs));
-//     }
-//     public void ShowRune(ulong tileViewId, InitialSymbol runeSymbolDescription) {
-//       commands.Add(new ShowRuneCommand(tileViewId, runeSymbolDescription));
+//     func ShowRune(i64 tileViewId, InitialSymbol runeSymbolDescription) {
+//       self.commands!.add(ShowRuneCommand(tileViewId, runeSymbolDescription));
 //     }
 func SetOverlay(self &!GameToDominoConnection, tileViewId i64, maybeOverlay Opt<InitialSymbol>) {
   self.commands!.add(SetOverlayCommand(tileViewId, maybeOverlay));
@@ -226,6 +246,10 @@ func DestroyTile(self &!GameToDominoConnection, tileViewId i64) {
 
 func DestroyUnit(self &!GameToDominoConnection, unitViewId i64) {
   self.commands!.add(DestroyUnitCommand(unitViewId));
+}
+
+func UnitHopTo(self &!GameToDominoConnection, unitViewId i64, destination Location, newElevation int) {
+  self.commands!.add(UnitHopToCommand(unitViewId, destination, newElevation));
 }
 
 

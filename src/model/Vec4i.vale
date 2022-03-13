@@ -21,42 +21,42 @@ func ==(a Vec4i, b Vec4i) bool {
 }
 
 //   public static bool operator==(Vec4i a, Vec4i b) {
-//     return a.Equals(b);
+//     ret a.Equals(b);
 //   }
 //   public static bool operator!=(Vec4i a, Vec4i b) {
-//     return !a.Equals(b);
+//     ret !a.Equals(b);
 //   }
 //   public static Vec4i operator*(Vec4i a, int n) {
-//     return new Vec4i(a.x * n, a.y * n, a.z * n, a.w * n);
+//     ret new Vec4i(a.x * n, a.y * n, a.z * n, a.w * n);
 //   }
 //   public static Vec4i operator/(Vec4i a, int n) {
-//     return new Vec4i(a.x / n, a.y / n, a.z / n, a.w / n);
+//     ret new Vec4i(a.x / n, a.y / n, a.z / n, a.w / n);
 //   }
 //   public static Vec4i operator+(Vec4i a, Vec4i b) {
-//     return new Vec4i(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+//     ret new Vec4i(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
 //   }
 //   public override int GetHashCode() {
-//     return GetDeterministicHashCode();
+//     ret GetDeterministicHashCode();
 //   }
 //   public int GetDeterministicHashCode() { return hashCode; }
 //   public int CompareTo(Vec4i that) {
 //     if (x != that.x) {
-//       return x.CompareTo(that.x);
+//       ret x.CompareTo(that.x);
 //     }
 //     if (y != that.y) {
-//       return y.CompareTo(that.y);
+//       ret y.CompareTo(that.y);
 //     }
 //     if (z != that.z) {
-//       return z.CompareTo(that.z);
+//       ret z.CompareTo(that.z);
 //     }
 //     if (w != that.w) {
-//       return w.CompareTo(that.w);
+//       ret w.CompareTo(that.w);
 //     }
-//     return 0;
+//     ret 0;
 //   }
 //   public override string ToString() { return DStr(); }
 //   public string DStr() {
-//     return "Vec4i(" +
+//     ret "Vec4i(" +
 //         x + ", " +
 //         y + ", " +
 //         z + ", " +
@@ -75,7 +75,7 @@ func ==(a Vec4i, b Vec4i) bool {
 //       source.Expect(",");
 //       var w = source.ParseInt();
 //       source.Expect(")");
-//       return new Vec4i(x, y, z, w);
+//       ret new Vec4i(x, y, z, w);
 //   }
 // }
        

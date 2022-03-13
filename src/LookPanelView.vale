@@ -1,0 +1,86 @@
+struct LookPanelView {
+  domino &!GameToDominoConnection;
+  screenGW int;
+  visibleOverlayPanelView! i64;
+  // In AthPlayer, the status view is below, so our LookPanelView is at 2 Y.
+  // In Editor, our LookPanelView is at the bottom, so has 0 Y.
+  panelGYInScreen int;
+  // In AthPlayer, the status view has padding on top of it, so our LookPanelView needs 0 bottom padding.
+  // In Editor, the status view is at the bottom of the screen, so needs 1 bottom padding.
+  bottomPadding int;
+}
+
+func LookPanelView(
+  domino &!GameToDominoConnection,
+  screenGW int,
+  panelGYInScreen int,
+  bottomPadding int)
+LookPanelView {
+  self.domino = domino;
+  self.screenGW = screenGW;
+  self.visibleOverlayPanelView = 0i64;
+  self.panelGYInScreen = panelGYInScreen;
+  self.bottomPadding = bottomPadding;
+}
+
+
+func ShowMessage(self &!LookPanelView, message str) {
+  SetStuff(true, message, "", List<(InitialSymbol, str)>());
+}
+func ClearMessage(self &!LookPanelView) {
+  if self.visibleOverlayPanelView != 0i64 {
+    self.domino!.ScheduleClose(self.visibleOverlayPanelView, 0i64);
+    set self.visibleOverlayPanelView = 0i64;
+  }
+}
+
+func SetStuff(
+    self &!LookPanelView,
+    visible bool,
+    message str,
+    status str,
+    symbolsAndLabels List<(InitialSymbol, str)>) {
+  self!.ClearMessage();
+  if not visible {
+    ret void();
+  }
+  topPadding = 1;
+  contentYStart = self.bottomPadding;
+  // 1 line of bottom padding, 1 line of text, 1 padding between, 1 line of text
+  panelGH = self.bottomPadding + 1 + 1 + 1 + topPadding;
+  panelGXInScreen = 0;
+
+  set self.visibleOverlayPanelView =
+    self.domino!.MakePanel(panelGXInScreen, self.panelGYInScreen, self.screenGW, panelGH);
+  self.domino!.AddRectangle(
+    self.visibleOverlayPanelView,
+    -1,
+    0,
+    1 + self.screenGW + 1,
+    panelGH,
+    1,
+    Vec4i(0, 0, 0, 217), Vec4i(0, 0, 0, 0));
+
+  buttonsWidth = 3;
+  if status.len() == 0 and symbolsAndLabels.len() == 0 {
+    lines = Wrap(message.slice(), self.screenGW - 2 - buttonsWidth);
+    foreach i in range(0, lines.len()) {
+      self.domino!.AddString(
+          self.visibleOverlayPanelView, 1, contentYStart + 2 - i, self.screenGW - 2, Vec4i(255, 255, 255, 255), "Cascadia", lines[i]);
+    }
+  } else {
+    self.domino!.AddString(self.visibleOverlayPanelView, 1, contentYStart + 2, self.screenGW - 2, Vec4i(255, 255, 255, 255), "Cascadia", message.slice());
+    self.domino!.AddString(self.visibleOverlayPanelView, self.screenGW - buttonsWidth - 1 - status.len(), contentYStart + 2, self.screenGW - 20 - 2, Vec4i(255, 255, 255, 255), "Cascadia", status.slice());
+    self.domino!.SetFadeIn(self.visibleOverlayPanelView, FadeIn(0i64, 100i64));
+    self.domino!.SetFadeOut(self.visibleOverlayPanelView, FadeOut(-200i64, 0i64));
+    x = 0;
+    foreach [symbol, label] in &symbolsAndLabels {
+      set x = x + 1; // Left margin
+      //self.visibleOverlayPanelView.AddSymbol(0, x, contentYStart, 1f, 1, symbol.frontColor.Get(long.MaxValue), symbol.symbolId, false);
+      set x = x + 2; // Symbol takes up a lot of space
+      self.domino!.AddString(self.visibleOverlayPanelView, x, contentYStart, 20, Vec4i(255, 255, 255, 255), "Cascadia", label.slice());
+      set x = x + label.len();
+      set x = x + 1; // Right margin
+    }
+  }
+}

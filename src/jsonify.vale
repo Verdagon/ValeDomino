@@ -30,6 +30,20 @@ func JsonNode(self &Vec4i) JsonNode {
   ret node;
 }
 
+func JsonNode(self &FadeIn) JsonNode {
+  node = JsonObject();
+  node.fields!.add("fade_in_start_time_ms", self.fadeInStartTimeMs.JsonNode());
+  node.fields!.add("fade_in_end_time_ms", self.fadeInEndTimeMs.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &FadeOut) JsonNode {
+  node = JsonObject();
+  node.fields!.add("fade_out_start_time_ms", self.fadeOutStartTimeMs.JsonNode());
+  node.fields!.add("fade_out_end_time_ms", self.fadeOutEndTimeMs.JsonNode());
+  ret node;
+}
+
 abstract func JsonNode(virtual self &Vec4iAnimation) JsonNode;
 func JsonNode(self &ConstantVec4iAnimation impl Vec4iAnimation) JsonNode {
   node = JsonObject();
@@ -166,6 +180,14 @@ func JsonNode(self &SetupGameCommand impl IDominoCommand) JsonNode {
   node.fields!.add("pattern", self.pattern.JsonNode());
   ret node;
 }
+func JsonNode(self &MoveCameraCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "MoveCamera".JsonNode());
+  node.fields!.add("look_at", self.look_at.JsonNode());
+  node.fields!.add("look_at_offset_to_camera", self.look_at_offset_to_camera.JsonNode());
+  node.fields!.add("duration", self.duration.JsonNode());
+  ret node;
+}
 func JsonNode(self &SetOverlayCommand impl IDominoCommand) JsonNode {
   node = JsonObject();
   node.fields!.add("command_type", "SetOverlay".JsonNode());
@@ -264,6 +286,15 @@ func JsonNode(self &DestroyUnitCommand impl IDominoCommand) JsonNode {
   ret node;
 }
 
+func JsonNode(self &UnitHopToCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "UnitHopTo".JsonNode());
+  node.fields!.add("unit_id", self.unitViewId.JsonNode());
+  node.fields!.add("destination", self.destination.JsonNode());
+  node.fields!.add("new_elevation", self.newElevation.JsonNode());
+  ret node;
+}
+
 func JsonNode(self &RemoveItemCommand impl IDominoCommand) JsonNode {
   node = JsonObject();
   node.fields!.add("command_type", "RemoveItem".JsonNode());
@@ -305,5 +336,78 @@ func JsonNode(self &AddDetailCommand impl IDominoCommand) JsonNode {
   node.fields!.add("unit_id", self.unitViewId.JsonNode());
   node.fields!.add("detail_id", self.detailId.JsonNode());
   node.fields!.add("symbol", self.symbol.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &AddSymbolCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "AddSymbol".JsonNode());
+  node.fields!.add("new_view_id", self.newViewId.JsonNode());
+  node.fields!.add("parent_view_id", self.parentViewId.JsonNode());
+  node.fields!.add("x", self.x.JsonNode());
+  node.fields!.add("y", self.y.JsonNode());
+  node.fields!.add("size", self.size.JsonNode());
+  node.fields!.add("z", self.z.JsonNode());
+  node.fields!.add("color", self.color.JsonNode());
+  node.fields!.add("symbol_id", self.symbolId.JsonNode());
+  node.fields!.add("centered", self.centered.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &SetFadeInCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "SetFadeIn".JsonNode());
+  node.fields!.add("id", self.id.JsonNode());
+  node.fields!.add("fade_in", self.fadeIn.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &SetFadeOutCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "SetFadeOut".JsonNode());
+  node.fields!.add("id", self.id.JsonNode());
+  node.fields!.add("fade_out", self.fadeOut.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &RemoveViewCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "RemoveView".JsonNode());
+  //node.fields!.add("panel_id", self.panelId.JsonNode());
+  node.fields!.add("view_id", self.viewId.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &ScheduleCloseCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "ScheduleClose".JsonNode());
+  node.fields!.add("view_id", self.viewId.JsonNode());
+  node.fields!.add("start_ms_from_now", self.startMsFromNow.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &MakePanelCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "MakePanel".JsonNode());
+  node.fields!.add("id", self.id.JsonNode());
+  node.fields!.add("panel_grid_x_in_screen", self.panelGXInScreen.JsonNode());
+  node.fields!.add("panel_grid_y_in_screen", self.panelGYInScreen.JsonNode());
+  node.fields!.add("panel_grid_width", self.panelGW.JsonNode());
+  node.fields!.add("panel_grid_height", self.panelGH.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &AddRectangleCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "AddRectangle".JsonNode());
+  node.fields!.add("new_view_id", self.newViewId.JsonNode());
+  node.fields!.add("parent_view_id", self.parentViewId.JsonNode());
+  node.fields!.add("x", self.x.JsonNode());
+  node.fields!.add("y", self.y.JsonNode());
+  node.fields!.add("width", self.width.JsonNode());
+  node.fields!.add("height", self.height.JsonNode());
+  node.fields!.add("z", self.z.JsonNode());
+  node.fields!.add("color", self.color.JsonNode());
+  node.fields!.add("border_color", self.borderColor.JsonNode());
   ret node;
 }
