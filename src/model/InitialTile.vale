@@ -2,9 +2,9 @@
 struct InitialTile {
   location Location;
   elevation int;
-  topColor Vec4iAnimation;
-  sideColor Vec4iAnimation;
-  maybeOverlaySymbol Opt<InitialSymbol>;
-  maybeFeatureSymbol Opt<InitialSymbol>;
+  topColor! Vec4iAnimation;
+  sideColor! Vec4iAnimation;
+  maybeOverlaySymbol! Opt<InitialSymbol>;
+  maybeFeatureSymbol! Opt<InitialSymbol>;
   itemIdToSymbol List<(i64, InitialSymbol)>;
 }

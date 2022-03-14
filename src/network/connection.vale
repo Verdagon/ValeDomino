@@ -118,6 +118,10 @@ func SetFadeIn(self &!GameToDominoConnection, id i64, fadeIn FadeIn) {
   self.commands!.add(SetFadeInCommand(id, fadeIn));
 }
 
+func UnitHpChanged(self &!GameToDominoConnection, id i64, hp int) {
+  self.commands!.add(UnitHpChangedCommand(id, hp));
+}
+
 func AddString(
     self &!GameToDominoConnection,
     parentViewId i64,
@@ -248,10 +252,21 @@ func DestroyUnit(self &!GameToDominoConnection, unitViewId i64) {
   self.commands!.add(DestroyUnitCommand(unitViewId));
 }
 
-func UnitHopTo(self &!GameToDominoConnection, unitViewId i64, destination Location, newElevation int) {
-  self.commands!.add(UnitHopToCommand(unitViewId, destination, newElevation));
+func UnitHopTo(self &!GameToDominoConnection, unitViewId i64, destination Location, newElevation int, duration int) {
+  self.commands!.add(UnitHopToCommand(unitViewId, destination, newElevation, duration));
 }
 
+func UnitFade(self &!GameToDominoConnection, unitViewId i64, duration int) {
+  self.commands!.add(UnitFadeCommand(unitViewId, duration));
+}
+
+func UnitLunge(self &!GameToDominoConnection, unitViewId i64, target Location, duration int) {
+  self.commands!.add(UnitLungeCommand(unitViewId, target, duration));
+}
+
+func Timer(self &!GameToDominoConnection, duration int, tag i64) {
+  self.commands!.add(TimerCommand(duration, tag));
+}
 
 func TakeCommands(self &!GameToDominoConnection) Array<mut, JsonNode> {
   old_commands = set self.commands = List<IDominoCommand>();

@@ -79,6 +79,23 @@ func ParseSetHoveredLocationRequest(node &JsonObject) Result<SetHoveredLocationR
   ret Ok<SetHoveredLocationRequest, str>(request);
 }
 
+func ParseTimerElapsedRequest(node &JsonObject) Result<TimerElapsedRequest, str> {
+  tag_node_result = expect_obj_member(node, "tag");
+  if tag_node_result.is_err() {
+    ret Err<TimerElapsedRequest, str>(tag_node_result.expect_err());
+  }
+  tag_node = (tag_node_result).expect("bork t");
+
+  tag_int_result = tag_node.as<JsonNumber>();
+  if tag_int_result.is_err() {
+    ret Err<TimerElapsedRequest, str>("ParseTimerElapsedRequest request's tag field isn't a tag.");
+  }
+  tag = (tag_int_result).expect("bork u").value;
+
+  request = TimerElapsedRequest(i64(tag));
+  ret Ok<TimerElapsedRequest, str>(request);
+}
+
 func ParseLocationMouseDownRequest(node &JsonObject) Result<LocationMouseDownRequest, str> {
   tile_id_result = expect_obj_member_int(node, "tile_id");
   if tile_id_result.is_err() {

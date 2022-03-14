@@ -209,6 +209,31 @@ struct UnitHopToCommand {
   unitViewId i64;
   destination Location;
   newElevation int;
+  duration int;
 }
 
+impl IDominoCommand for UnitFadeCommand;
+struct UnitFadeCommand {
+  unitViewId i64;
+  duration int;
+}
+
+impl IDominoCommand for UnitLungeCommand;
+struct UnitLungeCommand {
+  unitViewId i64;
+  target Location;
+  duration int;
+}
+
+impl IDominoCommand for UnitHpChangedCommand;
+struct UnitHpChangedCommand {
+  unitViewId i64;
+  hp int;
+}
+
+impl IDominoCommand for TimerCommand;
+struct TimerCommand {
+  duration int;
+  tag i64;
+}
 

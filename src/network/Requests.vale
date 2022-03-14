@@ -1,0 +1,28 @@
+
+struct StartRequest {
+  screen_gw int;
+  screen_gh int;
+}
+
+struct LocationMouseDownRequest {
+  tile_id int;
+  location Location;
+}
+
+struct SetHoveredLocationRequest {
+  tile_id int;
+  location Opt<Location>;
+}
+
+struct KeyDownRequest {
+  unicode int;
+  leftShiftDown bool;
+  rightShiftDown bool;
+  leftAltDown bool;
+  rightAltDown bool;
+  ctrlDown bool;
+}
+
+struct TimerElapsedRequest {
+  tag i64;
+}

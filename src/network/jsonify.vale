@@ -292,8 +292,35 @@ func JsonNode(self &UnitHopToCommand impl IDominoCommand) JsonNode {
   node.fields!.add("unit_id", self.unitViewId.JsonNode());
   node.fields!.add("destination", self.destination.JsonNode());
   node.fields!.add("new_elevation", self.newElevation.JsonNode());
+  node.fields!.add("duration", self.duration.JsonNode());
   ret node;
 }
+
+func JsonNode(self &UnitFadeCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "UnitFade".JsonNode());
+  node.fields!.add("unit_id", self.unitViewId.JsonNode());
+  node.fields!.add("duration", self.duration.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &UnitLungeCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "UnitLunge".JsonNode());
+  node.fields!.add("unit_id", self.unitViewId.JsonNode());
+  node.fields!.add("target", self.target.JsonNode());
+  node.fields!.add("duration", self.duration.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &TimerCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "Timer".JsonNode());
+  node.fields!.add("duration", self.duration.JsonNode());
+  node.fields!.add("tag", self.tag.JsonNode());
+  ret node;
+}
+
 
 func JsonNode(self &RemoveItemCommand impl IDominoCommand) JsonNode {
   node = JsonObject();
@@ -394,6 +421,14 @@ func JsonNode(self &MakePanelCommand impl IDominoCommand) JsonNode {
   node.fields!.add("panel_grid_y_in_screen", self.panelGYInScreen.JsonNode());
   node.fields!.add("panel_grid_width", self.panelGW.JsonNode());
   node.fields!.add("panel_grid_height", self.panelGH.JsonNode());
+  ret node;
+}
+
+func JsonNode(self &UnitHpChangedCommand impl IDominoCommand) JsonNode {
+  node = JsonObject();
+  node.fields!.add("command_type", "UnitHpChanged".JsonNode());
+  node.fields!.add("unit_id", self.unitViewId.JsonNode());
+  node.fields!.add("hp", self.hp.JsonNode());
   ret node;
 }
 
