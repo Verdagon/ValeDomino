@@ -1,6 +1,6 @@
 
 interface IEventHandler {
-  func handle(virtual self &!IEventHandler);
+  func handle(virtual self &IEventHandler);
 }
 
 interface IEvent { }
@@ -9,8 +9,8 @@ struct Event {
   id int;
 }
 
-func trigger(self &!Event) {
-  self.handler!.handle();
+func trigger(self &Event) {
+  self.handler.handle();
 }
 
 struct GameToDominoConnection {
@@ -28,7 +28,7 @@ func GameToDominoConnection() GameToDominoConnection {
 }
 
 func MakePanel(
-    self &!GameToDominoConnection,
+    self &GameToDominoConnection,
     panelGXInScreen int,
     panelGYInScreen int,
     panelGW int,
@@ -36,7 +36,7 @@ func MakePanel(
 i64 {
   id = self.next_id;
   set self.next_id = self.next_id + 1i64;
-  self.commands!.add(MakePanelCommand(id, panelGXInScreen, panelGYInScreen, panelGW, panelGH));
+  self.commands.add(MakePanelCommand(id, panelGXInScreen, panelGYInScreen, panelGW, panelGH));
   ret id;
   // ret Panel(this, id, panelGW, panelGH);
 }
@@ -64,66 +64,66 @@ i64 {
 //       }
 //     }
 
-func CreateTile(self &!GameToDominoConnection, initialTile InitialTile) i64 {
+func CreateTile(self &GameToDominoConnection, initialTile InitialTile) i64 {
   id = self.next_id;
   set self.next_id = self.next_id + 1i64;
-  self.commands!.add(CreateTileCommand(id, initialTile));
+  self.commands.add(CreateTileCommand(id, initialTile));
   ret id;
 }
 
 
-func CreateUnit(self &!GameToDominoConnection, initialUnit InitialUnit) i64 {
+func CreateUnit(self &GameToDominoConnection, initialUnit InitialUnit) i64 {
   id = self.next_id;
   set self.next_id = self.next_id + 1i64;
-  self.commands!.add(CreateUnitCommand(id, initialUnit));
+  self.commands.add(CreateUnitCommand(id, initialUnit));
   ret id;
 }
 
 func SetupGame(
-  self &!GameToDominoConnection,
+  self &GameToDominoConnection,
   cameraPosition Vec3i,
   lookatOffsetToCamera Vec3i,
   elevationStepHeight int,
   pattern Pattern)
 {
-  self.commands!.add(SetupGameCommand(cameraPosition, lookatOffsetToCamera, elevationStepHeight, pattern));
+  self.commands.add(SetupGameCommand(cameraPosition, lookatOffsetToCamera, elevationStepHeight, pattern));
 }
 
 func MoveCamera(
-  self &!GameToDominoConnection,
+  self &GameToDominoConnection,
   cameraPosition Vec3i,
   lookatOffsetToCamera Vec3i,
   duration int)
 {
-  self.commands!.add(MoveCameraCommand(cameraPosition, lookatOffsetToCamera, duration));
+  self.commands.add(MoveCameraCommand(cameraPosition, lookatOffsetToCamera, duration));
 }
 
-func ScheduleClose(self &!GameToDominoConnection, viewId i64, startMsFromNow i64) {
-  self.commands!.add(ScheduleCloseCommand(viewId, startMsFromNow));
+func ScheduleClose(self &GameToDominoConnection, viewId i64, startMsFromNow i64) {
+  self.commands.add(ScheduleCloseCommand(viewId, startMsFromNow));
 }
 
-func RemoveView(self &!GameToDominoConnection, viewId i64) {
-  self.commands!.add(RemoveViewCommand(viewId));
+func RemoveView(self &GameToDominoConnection, viewId i64) {
+  self.commands.add(RemoveViewCommand(viewId));
 }
 
 //     func SetOpacity(i64 viewId, int id, int percent) {
-//       self.commands!.add(SetOpacityCommand(viewId, id, percent));
+//       self.commands.add(SetOpacityCommand(viewId, id, percent));
 //     }
 
-func SetFadeOut(self &!GameToDominoConnection, id i64, fadeOut FadeOut) {
-  self.commands!.add(SetFadeOutCommand(id, fadeOut));
+func SetFadeOut(self &GameToDominoConnection, id i64, fadeOut FadeOut) {
+  self.commands.add(SetFadeOutCommand(id, fadeOut));
 }
 
-func SetFadeIn(self &!GameToDominoConnection, id i64, fadeIn FadeIn) {
-  self.commands!.add(SetFadeInCommand(id, fadeIn));
+func SetFadeIn(self &GameToDominoConnection, id i64, fadeIn FadeIn) {
+  self.commands.add(SetFadeInCommand(id, fadeIn));
 }
 
-func UnitHpChanged(self &!GameToDominoConnection, id i64, hp int) {
-  self.commands!.add(UnitHpChangedCommand(id, hp));
+func UnitHpChanged(self &GameToDominoConnection, id i64, hp int) {
+  self.commands.add(UnitHpChangedCommand(id, hp));
 }
 
 func AddString(
-    self &!GameToDominoConnection,
+    self &GameToDominoConnection,
     parentViewId i64,
     x int,
     y int,
@@ -135,7 +135,7 @@ func AddString(
   newViewIds = List<i64>();
   foreach i in range(0, s.len()) {
     unicode = s.charAt(i).toAscii();
-    newViewIds!.add(self!.AddSymbol(parentViewId, x + i, y, 1, 1, color, SymbolId(fontName, unicode), true));
+    newViewIds.add(self.AddSymbol(parentViewId, x + i, y, 1, 1, color, SymbolId(fontName, unicode), true));
   }
   ret (newViewIds).toArray();
 }
@@ -162,7 +162,7 @@ func AddString(
       
 // id = self.next_id;
 //  set self.next_id = self.next_id + 1i64;
-//       self.commands!.add(
+//       self.commands.add(
 //           AddButtonCommand(
 //               newViewId, parentViewId, x, y, width, height, z, color, borderColor, pressedColor, onClicked.id,
 //               onMouseIn.id, onMouseOut.id));
@@ -172,12 +172,12 @@ func AddString(
 //     // public i64 AddFullscreenRect(i64 parentViewId, Color color) {
 // id = self.next_id;
 //  set self.next_id = self.next_id + 1i64;
-//     //   self.commands!.add(AddFullscreenRectCommand(newViewId, parentViewId, color));
+//     //   self.commands.add(AddFullscreenRectCommand(newViewId, parentViewId, color));
 //     //   ret newViewId;
 //     // }
 
 func AddRectangle(
-    self &!GameToDominoConnection,
+    self &GameToDominoConnection,
     parentViewId i64,
     x int,
     y int,
@@ -189,13 +189,13 @@ func AddRectangle(
 i64 {
   newViewId = self.next_id;
   set self.next_id = self.next_id + 1i64;
-  self.commands!.add(
+  self.commands.add(
       AddRectangleCommand(newViewId, parentViewId, x, y, width, height, z, color, borderColor));
   ret newViewId;
 }
 
 func AddSymbol(
-    self &!GameToDominoConnection,
+    self &GameToDominoConnection,
     parentViewId i64,
     x int,
     y int,
@@ -207,70 +207,70 @@ func AddSymbol(
 i64 {
   newViewId = self.next_id;
   set self.next_id = self.next_id + 1i64;
-  self.commands!.add(AddSymbolCommand(newViewId, parentViewId, x, y, size, z, color, symbol, centered));
+  self.commands.add(AddSymbolCommand(newViewId, parentViewId, x, y, size, z, color, symbol, centered));
   ret newViewId;
 }
 
 //     func ShowPrism(i64 tileViewId, InitialSymbol prismDescription, InitialSymbol prismOverlayDescription) {
-//       self.commands!.add(ShowPrismCommand(tileViewId, prismDescription, prismOverlayDescription));
+//       self.commands.add(ShowPrismCommand(tileViewId, prismDescription, prismOverlayDescription));
 //     }
 //     func FadeInThenOut(i64 tileViewId, long inDurationMs, long outDurationMs) {
-//       self.commands!.add(FadeInThenOutCommand(tileViewId, inDurationMs, outDurationMs));
+//       self.commands.add(FadeInThenOutCommand(tileViewId, inDurationMs, outDurationMs));
 //     }
 //     func ShowRune(i64 tileViewId, InitialSymbol runeSymbolDescription) {
-//       self.commands!.add(ShowRuneCommand(tileViewId, runeSymbolDescription));
+//       self.commands.add(ShowRuneCommand(tileViewId, runeSymbolDescription));
 //     }
-func SetOverlay(self &!GameToDominoConnection, tileViewId i64, maybeOverlay Opt<InitialSymbol>) {
-  self.commands!.add(SetOverlayCommand(tileViewId, maybeOverlay));
+func SetOverlay(self &GameToDominoConnection, tileViewId i64, maybeOverlay Opt<InitialSymbol>) {
+  self.commands.add(SetOverlayCommand(tileViewId, maybeOverlay));
 }
-func SetFeature(self &!GameToDominoConnection, tileViewId i64, maybeFeature Opt<InitialSymbol>) {
-  self.commands!.add(SetFeatureCommand(tileViewId, maybeFeature));
+func SetFeature(self &GameToDominoConnection, tileViewId i64, maybeFeature Opt<InitialSymbol>) {
+  self.commands.add(SetFeatureCommand(tileViewId, maybeFeature));
 }
-func SetSurfaceColor(self &!GameToDominoConnection, tileViewId i64, frontColor Vec4iAnimation) {
-  self.commands!.add(SetSurfaceColorCommand(tileViewId, frontColor));
+func SetSurfaceColor(self &GameToDominoConnection, tileViewId i64, frontColor Vec4iAnimation) {
+  self.commands.add(SetSurfaceColorCommand(tileViewId, frontColor));
 }
-func SetCliffColor(self &!GameToDominoConnection, tileViewId i64, cliffColor Vec4iAnimation) {
-  self.commands!.add(SetCliffColorCommand(tileViewId, cliffColor));
+func SetCliffColor(self &GameToDominoConnection, tileViewId i64, cliffColor Vec4iAnimation) {
+  self.commands.add(SetCliffColorCommand(tileViewId, cliffColor));
 }
-func SetElevation(self &!GameToDominoConnection, tileViewId i64, elevation int) {
-  self.commands!.add(SetElevationCommand(tileViewId, elevation));
+func SetElevation(self &GameToDominoConnection, tileViewId i64, elevation int) {
+  self.commands.add(SetElevationCommand(tileViewId, elevation));
 }
-func RemoveItem(self &!GameToDominoConnection, tileViewId i64, id i64) {
-  self.commands!.add(RemoveItemCommand(tileViewId, id));
+func RemoveItem(self &GameToDominoConnection, tileViewId i64, id i64) {
+  self.commands.add(RemoveItemCommand(tileViewId, id));
 }
-func ClearItems(self &!GameToDominoConnection, tileViewId i64) {
-  self.commands!.add(ClearItemsCommand(tileViewId));
+func ClearItems(self &GameToDominoConnection, tileViewId i64) {
+  self.commands.add(ClearItemsCommand(tileViewId));
 }
-func AddItem(self &!GameToDominoConnection, tileViewId i64, itemId i64, symbolDescription InitialSymbol) {
-  self.commands!.add(AddItemCommand(tileViewId, itemId, symbolDescription));
+func AddItem(self &GameToDominoConnection, tileViewId i64, itemId i64, symbolDescription InitialSymbol) {
+  self.commands.add(AddItemCommand(tileViewId, itemId, symbolDescription));
 }
-func DestroyTile(self &!GameToDominoConnection, tileViewId i64) {
-  self.commands!.add(DestroyTileCommand(tileViewId));
-}
-
-func DestroyUnit(self &!GameToDominoConnection, unitViewId i64) {
-  self.commands!.add(DestroyUnitCommand(unitViewId));
+func DestroyTile(self &GameToDominoConnection, tileViewId i64) {
+  self.commands.add(DestroyTileCommand(tileViewId));
 }
 
-func UnitHopTo(self &!GameToDominoConnection, unitViewId i64, destination Location, newElevation int, duration int) {
-  self.commands!.add(UnitHopToCommand(unitViewId, destination, newElevation, duration));
+func DestroyUnit(self &GameToDominoConnection, unitViewId i64) {
+  self.commands.add(DestroyUnitCommand(unitViewId));
 }
 
-func UnitFade(self &!GameToDominoConnection, unitViewId i64, duration int) {
-  self.commands!.add(UnitFadeCommand(unitViewId, duration));
+func UnitHopTo(self &GameToDominoConnection, unitViewId i64, destination Location, newElevation int, duration int) {
+  self.commands.add(UnitHopToCommand(unitViewId, destination, newElevation, duration));
 }
 
-func UnitLunge(self &!GameToDominoConnection, unitViewId i64, target Location, duration int) {
-  self.commands!.add(UnitLungeCommand(unitViewId, target, duration));
+func UnitFade(self &GameToDominoConnection, unitViewId i64, duration int) {
+  self.commands.add(UnitFadeCommand(unitViewId, duration));
 }
 
-func Timer(self &!GameToDominoConnection, duration int, tag i64) {
-  self.commands!.add(TimerCommand(duration, tag));
+func UnitLunge(self &GameToDominoConnection, unitViewId i64, target Location, duration int) {
+  self.commands.add(UnitLungeCommand(unitViewId, target, duration));
 }
 
-func TakeCommands(self &!GameToDominoConnection) Array<mut, JsonNode> {
+func Timer(self &GameToDominoConnection, duration int, tag i64) {
+  self.commands.add(TimerCommand(duration, tag));
+}
+
+func TakeCommands(self &GameToDominoConnection) Array<mut, JsonNode> {
   old_commands = set self.commands = List<IDominoCommand>();
   ret Array<mut, JsonNode>(
     old_commands.len(),
-    &!{ old_commands.get(_).JsonNode() });
+    &{ old_commands.get(_).JsonNode() });
 }

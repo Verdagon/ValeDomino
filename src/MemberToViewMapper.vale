@@ -52,7 +52,7 @@ struct MemberToViewMapper {
   entries HashMap<str, List<IDescription>, StrHasher, StrEquator>;
 }
 
-func getEntries(self &MemberToViewMapper, name str) *List<IDescription> {
+func getEntries(self &MemberToViewMapper, name str) &List<IDescription> {
   if not self.entries.ContainsKey(name) {
     panic("No entries for member: " + name);
   }
@@ -63,7 +63,7 @@ func MemberToViewMapperLoadMap(
     resourcesPath str,
     filename str)
 MemberToViewMapper {
-  filePath = Path(resourcesPath)./(filename);
+  filePath = Path(resourcesPath) / filename;
   jsonStr = filePath.readAsString();
 
   entries =
@@ -82,13 +82,13 @@ MemberToViewMapper {
   }
   root_obj = (maybe_root_obj).expect("bork g");
 
-  foreach [memberName, memberNode &!JsonNode] in root_obj.fields {
+  foreach [memberName, memberNode &JsonNode] in root_obj.fields {
 
-    memberObjResult = memberNode!.as<JsonObject>();
+    memberObjResult = memberNode.as<JsonObject>();
     if memberObjResult.is_err() {
       panic("Root member wasn't json object!");
     }
-    memberObj = &!(memberObjResult).expect("bork h");
+    memberObj = &(memberObjResult).expect("bork h");
 
     memberEntries =
       if (entries.ContainsKey(memberName)) {
@@ -96,50 +96,50 @@ MemberToViewMapper {
       } else {
         newList = List<IDescription>();
         result = &newList;
-        entries!.add(memberName, newList);
+        entries.add(memberName, newList);
         result
       };
 
     maybe_surface_color = memberObj.fields.get("surface_color");
     if (not maybe_surface_color.isEmpty()) {
       surface_color = maybe_surface_color.get("derped l");
-      memberEntries!.add(TopColorDescriptionForIDescription(ParseColorAnim(&surface_color)));
-      //memberObj.fields!.remove("surface_color");
+      memberEntries.add(TopColorDescriptionForIDescription(ParseColorAnim(&surface_color)));
+      //memberObj.fields.remove("surface_color");
     }
 
     maybe_wall_color = memberObj.fields.get("wall_color");
     if (not maybe_wall_color.isEmpty()) {
       wall_color = maybe_wall_color.get("derped m");
-      memberEntries!.add(SideColorDescriptionForIDescription(ParseColorAnim(&wall_color)));
-      //memberObj.fields!.remove("wall_color");
+      memberEntries.add(SideColorDescriptionForIDescription(ParseColorAnim(&wall_color)));
+      //memberObj.fields.remove("wall_color");
     }
 
     maybe_overlay = memberObj.fields.get("overlay");
     if (not maybe_overlay.isEmpty()) {
       overlay = maybe_overlay.get("derped n");
-      memberEntries!.add(OverlayDescriptionForIDescription(ParseInitialSymbol(&overlay)));
-      //memberObj.fields!.remove("wall_color");
+      memberEntries.add(OverlayDescriptionForIDescription(ParseInitialSymbol(&overlay)));
+      //memberObj.fields.remove("wall_color");
     }
 
     maybe_feature = memberObj.fields.get("feature");
     if (not maybe_feature.isEmpty()) {
       feature = maybe_feature.get("derped n");
-      memberEntries!.add(FeatureDescriptionForIDescription(ParseInitialSymbol(&feature)));
-      //memberObj.fields!.remove("wall_color");
+      memberEntries.add(FeatureDescriptionForIDescription(ParseInitialSymbol(&feature)));
+      //memberObj.fields.remove("wall_color");
     }
 
     maybe_item = memberObj.fields.get("item");
     if (not maybe_item.isEmpty()) {
       item = maybe_item.get("derped n");
-      memberEntries!.add(ItemDescriptionForIDescription(ParseInitialSymbol(&item)));
-      //memberObj.fields!.remove("wall_color");
+      memberEntries.add(ItemDescriptionForIDescription(ParseInitialSymbol(&item)));
+      //memberObj.fields.remove("wall_color");
     }
 
     maybe_detail = memberObj.fields.get("detail");
     if (not maybe_detail.isEmpty()) {
       detail = maybe_detail.get("derped n");
-      memberEntries!.add(DetailDescriptionForIDescription(ParseInitialSymbol(&detail)));
-      //memberObj.fields!.remove("wall_color");
+      memberEntries.add(DetailDescriptionForIDescription(ParseInitialSymbol(&detail)));
+      //memberObj.fields.remove("wall_color");
     }
 
     maybe_unit = memberObj.fields.get("unit");
@@ -148,16 +148,16 @@ MemberToViewMapper {
       faceSymbol =
           ParseInitialSymbol(
               &unit.fields.get("face").get("Unit doesn't have face field!"));
-      memberEntries!.add(DominoFaceDescriptionForIDescription(faceSymbol));
+      memberEntries.add(DominoFaceDescriptionForIDescription(faceSymbol));
       dominoSymbol =
           ParseInitialSymbol(
               &unit.fields.get("domino").get("Unit doesn't have domino field!"));
-      memberEntries!.add(DominoShapeDescriptionForIDescription(dominoSymbol));
-      //memberObj.fields!.remove("wall_color");
+      memberEntries.add(DominoShapeDescriptionForIDescription(dominoSymbol));
+      //memberObj.fields.remove("wall_color");
     }
 
     //if memberObj.fields.len() > 0 {
-    //  panic("Unknown key: " + memberObj.fields.KeysIter()!.next().get());
+    //  panic("Unknown key: " + memberObj.fields.KeysIter().next().get());
     //}
   }
   ret MemberToViewMapper(entries);

@@ -1,6 +1,6 @@
 
 struct ListView {
-  domino &!GameToDominoConnection;
+  domino &GameToDominoConnection;
 
   panelId i64;
   viewGW int;
@@ -9,7 +9,7 @@ struct ListView {
 }
 
 func ListView(
-    domino &!GameToDominoConnection,
+    domino &GameToDominoConnection,
     // i64 viewId,
     x int,
     y int,
@@ -17,7 +17,7 @@ func ListView(
     viewGH int)
 ListView {
   self.domino = domino;
-  self.panelId = domino!.MakePanel(x, y, viewGW, viewGH);
+  self.panelId = domino.MakePanel(x, y, viewGW, viewGH);
   self.viewGW = viewGW;
   self.viewGH = viewGH;
   self.descendantIds = List<i64>();
@@ -25,26 +25,26 @@ ListView {
   //this.overlayPaneler = overlayPaneler;
 }
 
-func ShowEntries(self &!ListView, items List<(SymbolId, str)>) {
+func ShowEntries(self &ListView, items List<(SymbolId, str)>) {
   foreach descendantId in self.descendantIds {
-    self.domino!.RemoveView(descendantId);
+    self.domino.RemoveView(descendantId);
   }
   set self.descendantIds = List<i64>();
   // panel.Clear();
 
   if items.len() > 0 {
-    self.descendantIds!.add(
-        self.domino!.AddRectangle(
+    self.descendantIds.add(
+        self.domino.AddRectangle(
             self.panelId, -1, -1, self.viewGW + 2, self.viewGH, 0, Vec4i(0, 0, 0, 230), Vec4i(0, 0, 0, 0)));
 
     foreach [i, [symbol, text]] in items.array.entries() {
       // view.AddSymbol(0, 1, view.symbolsHigh - (i * 2 + 2), 2.0f, 0, Color(1, 1, 1), entries[i].symbol);
       
       stringIds =
-          self.domino!.AddString(
+          self.domino.AddString(
               self.panelId, 5, self.viewGH - (i * 2 - 4), self.viewGW - 3, Vec4i(255, 255, 255, 255), "Cascadia", text.slice());
       foreach stringId in stringIds {
-        self.descendantIds!.add(stringId);
+        self.descendantIds.add(stringId);
       }
     }
   }

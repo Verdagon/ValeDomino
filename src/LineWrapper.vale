@@ -5,10 +5,10 @@ func Wrap(text StrSlice, margin int) []StrSlice {
   foreach startingLine in &startingLines {
     wrappedLines = WrapLine(startingLine, margin);
     foreach line in &wrappedLines {
-      resultingLines!.add(line);
+      resultingLines.add(line);
     }
     if (wrappedLines.len() == 0) {
-      resultingLines!.add("".slice());
+      resultingLines.add("".slice());
     }
   }
   ret (resultingLines).toArray();
@@ -30,12 +30,12 @@ func WrapLine(untrimmed_text StrSlice, margin int)
       set end = start + margin;
     }
 
-    lines!.add(text.slice(start, end - start));
+    lines.add(text.slice(start, end - start));
     set start = end + 1;
   }
 
   if start < text.len() {
-    lines!.add(text.slice(start));
+    lines.add(text.slice(start));
   }
 
   ret (lines).toArray();

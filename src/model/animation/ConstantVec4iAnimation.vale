@@ -4,7 +4,7 @@ struct ConstantVec4iAnimation {
 }
 impl Vec4iAnimation for ConstantVec4iAnimation;
 
-func clone(self &ConstantVec4iAnimation impl Vec4iAnimation) Vec4iAnimation {
+func clone(self &ConstantVec4iAnimation) Vec4iAnimation {
   ConstantVec4iAnimation(self.val)
 }
 

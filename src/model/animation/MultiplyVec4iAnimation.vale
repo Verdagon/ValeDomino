@@ -5,6 +5,6 @@ struct MultiplyVec4iAnimation {
 }
 impl Vec4iAnimation for MultiplyVec4iAnimation;
 
-func clone(self &MultiplyVec4iAnimation impl Vec4iAnimation) Vec4iAnimation {
+func clone(self &MultiplyVec4iAnimation) Vec4iAnimation {
   MultiplyVec4iAnimation(self.left.clone(), self.right.clone())
 }

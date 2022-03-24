@@ -8,221 +8,225 @@ func JsonNode(i i64) JsonNumber {
 
 func JsonNode(self &Vec2i) JsonNode {
   node = JsonObject();
-  node.fields!.add("x", self.x.JsonNode());
-  node.fields!.add("y", self.y.JsonNode());
+  node.fields.add("x", self.x.JsonNode());
+  node.fields.add("y", self.y.JsonNode());
   ret node;
 }
 
 func JsonNode(self &Vec3i) JsonNode {
   node = JsonObject();
-  node.fields!.add("x", self.x.JsonNode());
-  node.fields!.add("y", self.y.JsonNode());
-  node.fields!.add("z", self.z.JsonNode());
+  node.fields.add("x", self.x.JsonNode());
+  node.fields.add("y", self.y.JsonNode());
+  node.fields.add("z", self.z.JsonNode());
   ret node;
 }
 
 func JsonNode(self &Vec4i) JsonNode {
   node = JsonObject();
-  node.fields!.add("x", self.x.JsonNode());
-  node.fields!.add("y", self.y.JsonNode());
-  node.fields!.add("z", self.z.JsonNode());
-  node.fields!.add("w", self.w.JsonNode());
+  node.fields.add("x", self.x.JsonNode());
+  node.fields.add("y", self.y.JsonNode());
+  node.fields.add("z", self.z.JsonNode());
+  node.fields.add("w", self.w.JsonNode());
   ret node;
 }
 
 func JsonNode(self &FadeIn) JsonNode {
   node = JsonObject();
-  node.fields!.add("fade_in_start_time_ms", self.fadeInStartTimeMs.JsonNode());
-  node.fields!.add("fade_in_end_time_ms", self.fadeInEndTimeMs.JsonNode());
+  node.fields.add("fade_in_start_time_ms", self.fadeInStartTimeMs.JsonNode());
+  node.fields.add("fade_in_end_time_ms", self.fadeInEndTimeMs.JsonNode());
   ret node;
 }
 
 func JsonNode(self &FadeOut) JsonNode {
   node = JsonObject();
-  node.fields!.add("fade_out_start_time_ms", self.fadeOutStartTimeMs.JsonNode());
-  node.fields!.add("fade_out_end_time_ms", self.fadeOutEndTimeMs.JsonNode());
+  node.fields.add("fade_out_start_time_ms", self.fadeOutStartTimeMs.JsonNode());
+  node.fields.add("fade_out_end_time_ms", self.fadeOutEndTimeMs.JsonNode());
   ret node;
 }
 
 abstract func JsonNode(virtual self &Vec4iAnimation) JsonNode;
-func JsonNode(self &ConstantVec4iAnimation impl Vec4iAnimation) JsonNode {
+func JsonNode(self &ConstantVec4iAnimation) JsonNode {
   node = JsonObject();
-  node.fields!.add("Vec4iAnimation", "ConstantVec4iAnimation".JsonNode());
-  node.fields!.add("val", self.val.JsonNode());
+  node.fields.add("Vec4iAnimation", "ConstantVec4iAnimation".JsonNode());
+  node.fields.add("val", self.val.JsonNode());
   ret node;
 }
-func JsonNode(self &MultiplyVec4iAnimation impl Vec4iAnimation) JsonNode {
+func JsonNode(self &MultiplyVec4iAnimation) JsonNode {
   node = JsonObject();
-  node.fields!.add("Vec4iAnimation", "MultiplyVec4iAnimation".JsonNode());
-  node.fields!.add("left", self.left.JsonNode());
-  node.fields!.add("right", self.right.JsonNode());
+  node.fields.add("Vec4iAnimation", "MultiplyVec4iAnimation".JsonNode());
+  node.fields.add("left", self.left.JsonNode());
+  node.fields.add("right", self.right.JsonNode());
   ret node;
 }
-func JsonNode(self &AddVec4iAnimation impl Vec4iAnimation) JsonNode {
+func JsonNode(self &AddVec4iAnimation) JsonNode {
   node = JsonObject();
-  node.fields!.add("Vec4iAnimation", "AddVec4iAnimation".JsonNode());
-  node.fields!.add("left", self.left.JsonNode());
-  node.fields!.add("right", self.right.JsonNode());
+  node.fields.add("Vec4iAnimation", "AddVec4iAnimation".JsonNode());
+  node.fields.add("left", self.left.JsonNode());
+  node.fields.add("right", self.right.JsonNode());
   ret node;
 }
-func JsonNode(self &DivideVec4iAnimation impl Vec4iAnimation) JsonNode {
+func JsonNode(self &DivideVec4iAnimation) JsonNode {
   node = JsonObject();
-  node.fields!.add("Vec4iAnimation", "DivideVec4iAnimation".JsonNode());
-  node.fields!.add("left", self.left.JsonNode());
-  node.fields!.add("right", self.right.JsonNode());
+  node.fields.add("Vec4iAnimation", "DivideVec4iAnimation".JsonNode());
+  node.fields.add("left", self.left.JsonNode());
+  node.fields.add("right", self.right.JsonNode());
   ret node;
 }
 
 func JsonNode(self &Location) JsonNode {
   node = JsonObject();
-  node.fields!.add("group_x", self.group_x.JsonNode());
-  node.fields!.add("group_y", self.group_y.JsonNode());
-  node.fields!.add("index_in_group", self.index_in_group.JsonNode());
+  node.fields.add("group_x", self.group_x.JsonNode());
+  node.fields.add("group_y", self.group_y.JsonNode());
+  node.fields.add("index_in_group", self.index_in_group.JsonNode());
   ret node;
 }
 
 func JsonNode(self &InitialTile) JsonNode {
   node = JsonObject();
-  node.fields!.add("location", self.location.JsonNode());
-  node.fields!.add("elevation", self.elevation.JsonNode());
-  node.fields!.add("top_color", self.topColor.JsonNode());
-  node.fields!.add("side_color", self.sideColor.JsonNode());
+  node.fields.add("location", self.location.JsonNode());
+  node.fields.add("elevation", self.elevation.JsonNode());
+  node.fields.add("top_color", self.topColor.JsonNode());
+  node.fields.add("side_color", self.sideColor.JsonNode());
+  if not self.maybeOverlaySymbol.isEmpty() {
+    overlaySymbol = self.maybeOverlaySymbol.get();
+    node.fields.add("maybe_overlay_symbol", overlaySymbol.JsonNode());
+  }
   ret node;
 }
 
 func JsonNode(self &(i64, InitialSymbol)) JsonNode {
   node = JsonObject();
-  node.fields!.add("key", self.0.JsonNode());
-  node.fields!.add("value", self.1.JsonNode());
+  node.fields.add("key", self.0.JsonNode());
+  node.fields.add("value", self.1.JsonNode());
   ret node;
 }
 
 func JsonNode(self &InitialUnit) JsonNode {
   node = JsonObject();
-  node.fields!.add("location", self.location.JsonNode());
-  node.fields!.add("domino", self.dominoSymbol.JsonNode());
-  node.fields!.add("face", self.faceSymbol.JsonNode());
-  node.fields!.add(
+  node.fields.add("location", self.location.JsonNode());
+  node.fields.add("domino", self.dominoSymbol.JsonNode());
+  node.fields.add("face", self.faceSymbol.JsonNode());
+  node.fields.add(
       "id_to_detail_symbol",
       JsonArray(
           toVaryArray(
               self.idToDetailSymbol.map(([id, symbol]) => {
                 entryNode = JsonObject();
-                entryNode.fields!.add("id", id.JsonNode());
-                entryNode.fields!.add("symbol", symbol.JsonNode());
+                entryNode.fields.add("id", id.JsonNode());
+                entryNode.fields.add("symbol", symbol.JsonNode());
                 x JsonNode = entryNode;
                 x
               }))));
-  node.fields!.add("hp_percent", self.hpPercent.JsonNode());
-  node.fields!.add("mp_percent", self.mpPercent.JsonNode());
+  node.fields.add("hp_percent", self.hpPercent.JsonNode());
+  node.fields.add("mp_percent", self.mpPercent.JsonNode());
   ret node;
 }
 
 func JsonNode(self &InitialSymbol) JsonObject {
   node = JsonObject();
-  node.fields!.add("glyph", self.glyph.JsonNode());
-  node.fields!.add("outline", (self.outline.map({_.JsonNode()})).or({JsonNull()}));
-  node.fields!.add("sides", (self.sides.map({_.JsonNode()})).or({JsonNull()}));
-  node.fields!.add("rotation_degrees", self.rotationDegrees.JsonNode());
-  node.fields!.add("size_percent", self.sizePercent.JsonNode());
+  node.fields.add("glyph", self.glyph.JsonNode());
+  node.fields.add("outline", (self.outline.map({_.JsonNode()})).or({JsonNull()}));
+  node.fields.add("sides", (self.sides.map({_.JsonNode()})).or({JsonNull()}));
+  node.fields.add("rotation_degrees", self.rotationDegrees.JsonNode());
+  node.fields.add("size_percent", self.sizePercent.JsonNode());
   ret node;
 }
 
 func JsonNode(self &InitialSymbolGlyph) JsonNode {
   node = JsonObject();
-  node.fields!.add("symbol_id", self.symbolId.JsonNode());
-  node.fields!.add("color", self.color.JsonNode());
+  node.fields.add("symbol_id", self.symbolId.JsonNode());
+  node.fields.add("color", self.color.JsonNode());
   ret node;
 }
 
 func JsonNode(self &SymbolId) JsonNode {
   node = JsonObject();
-  node.fields!.add("font_name", self.fontName.JsonNode());
-  node.fields!.add("unicode", self.unicode.JsonNode());
+  node.fields.add("font_name", self.fontName.JsonNode());
+  node.fields.add("unicode", self.unicode.JsonNode());
   ret node;
 }
 
 func JsonNode(self &InitialSymbolOutline) JsonNode {
   node = JsonObject();
-  node.fields!.add("type", OutlineModeToString(self.mode).JsonNode());
-  node.fields!.add("color", self.color.JsonNode());
+  node.fields.add("type", OutlineModeToString(self.mode).JsonNode());
+  node.fields.add("color", self.color.JsonNode());
   ret node;
 }
 
 func JsonNode(self &InitialSymbolSides) JsonNode {
   node = JsonObject();
-  node.fields!.add("depth_percent", self.depthPercent.JsonNode());
-  node.fields!.add("color", self.color.JsonNode());
+  node.fields.add("depth_percent", self.depthPercent.JsonNode());
+  node.fields.add("color", self.color.JsonNode());
   ret node;
 }
 
 abstract func JsonNode(virtual self &IDominoCommand) JsonNode;
-func JsonNode(self &CreateTileCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &CreateTileCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "CreateTile".JsonNode());
-  node.fields!.add("tile_id", self.newTileId.JsonNode());
-  node.fields!.add("initial_tile", self.initialTile.JsonNode());
+  node.fields.add("command_type", "CreateTile".JsonNode());
+  node.fields.add("tile_id", self.newTileId.JsonNode());
+  node.fields.add("initial_tile", self.initialTile.JsonNode());
   ret node;
 }
-func JsonNode(self &CreateUnitCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &CreateUnitCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "CreateUnit".JsonNode());
-  node.fields!.add("unit_id", self.unitId.JsonNode());
-  node.fields!.add("initial_unit", self.initialUnit.JsonNode());
+  node.fields.add("command_type", "CreateUnit".JsonNode());
+  node.fields.add("unit_id", self.unitId.JsonNode());
+  node.fields.add("initial_unit", self.initialUnit.JsonNode());
   ret node;
 }
-func JsonNode(self &SetupGameCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetupGameCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetupGame".JsonNode());
-  node.fields!.add("look_at", self.look_at.JsonNode());
-  node.fields!.add("look_at_offset_to_camera", self.look_at_offset_to_camera.JsonNode());
-  node.fields!.add("elevation_step_height", self.elevation_step_height.JsonNode());
-  node.fields!.add("pattern", self.pattern.JsonNode());
+  node.fields.add("command_type", "SetupGame".JsonNode());
+  node.fields.add("look_at", self.look_at.JsonNode());
+  node.fields.add("look_at_offset_to_camera", self.look_at_offset_to_camera.JsonNode());
+  node.fields.add("elevation_step_height", self.elevation_step_height.JsonNode());
+  node.fields.add("pattern", self.pattern.JsonNode());
   ret node;
 }
-func JsonNode(self &MoveCameraCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &MoveCameraCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "MoveCamera".JsonNode());
-  node.fields!.add("look_at", self.look_at.JsonNode());
-  node.fields!.add("look_at_offset_to_camera", self.look_at_offset_to_camera.JsonNode());
-  node.fields!.add("duration", self.duration.JsonNode());
+  node.fields.add("command_type", "MoveCamera".JsonNode());
+  node.fields.add("look_at", self.look_at.JsonNode());
+  node.fields.add("look_at_offset_to_camera", self.look_at_offset_to_camera.JsonNode());
+  node.fields.add("duration", self.duration.JsonNode());
   ret node;
 }
-func JsonNode(self &SetOverlayCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetOverlayCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetOverlay".JsonNode());
-  node.fields!.add("tile_id", self.tileId.JsonNode());
-  node.fields!.add(
+  node.fields.add("command_type", "SetOverlay".JsonNode());
+  node.fields.add("tile_id", self.tileId.JsonNode());
+  node.fields.add(
     "symbol",
     if self.symbol.isEmpty() { JsonNull() }
-    else { (&self.symbol.get()).JsonNode() });
+    else { self.symbol.get()&.JsonNode() });
   ret node;
 }
-func JsonNode(self &SetSurfaceColorCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetSurfaceColorCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetSurfaceColor".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
-  node.fields!.add("color", self.frontColor.JsonNode());
+  node.fields.add("command_type", "SetSurfaceColor".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("color", self.frontColor.JsonNode());
   ret node;
 }
-func JsonNode(self &SetCliffColorCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetCliffColorCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetCliffColor".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
-  node.fields!.add("color", self.frontColor.JsonNode());
+  node.fields.add("command_type", "SetCliffColor".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("color", self.frontColor.JsonNode());
   ret node;
 }
-func JsonNode(self &DestroyTileCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &DestroyTileCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "DestroyTile".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("command_type", "DestroyTile".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
   ret node;
 }
-func JsonNode(self &SetElevationCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetElevationCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetElevation".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
-  node.fields!.add("elevation", self.elevation.JsonNode());
+  node.fields.add("command_type", "SetElevation".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("elevation", self.elevation.JsonNode());
   ret node;
 }
 
@@ -230,219 +234,219 @@ func JsonNode<T>(list &List<T>) JsonNode {
   ret JsonArray(
       Array<mut, JsonNode>(
           list.len(),
-          &!{ list.get(_).JsonNode() }));
+          &{ list.get(_).JsonNode() }));
 }
 
 func JsonNode(self &Pattern) JsonNode {
   node = JsonObject();
-  node.fields!.add("name", self.name.JsonNode());
-  node.fields!.add("shape_index_to_corners", self.shape_index_to_corners.JsonNode());
-  node.fields!.add("pattern_tiles", self.pattern_tiles.JsonNode());
-  node.fields!.add("x_offset", self.x_offset.JsonNode());
-  node.fields!.add("y_offset", self.y_offset.JsonNode());
+  node.fields.add("name", self.name.JsonNode());
+  node.fields.add("shape_index_to_corners", self.shape_index_to_corners.JsonNode());
+  node.fields.add("pattern_tiles", self.pattern_tiles.JsonNode());
+  node.fields.add("x_offset", self.x_offset.JsonNode());
+  node.fields.add("y_offset", self.y_offset.JsonNode());
   ret node;
 }
 
 func JsonNode(self &PatternTile) JsonNode {
   node = JsonObject();
-  node.fields!.add("shape_index", self.shape_index.JsonNode());
-  node.fields!.add("rotate_radianards", self.rotate_radianards.JsonNode());
-  node.fields!.add("translate", self.translate.JsonNode());
-  node.fields!.add("side_index_to_side_adjacencies", self.side_index_to_side_adjacencies.JsonNode());
-  node.fields!.add("corner_index_to_corner_adjacencies", self.corner_index_to_corner_adjacencies.JsonNode());
+  node.fields.add("shape_index", self.shape_index.JsonNode());
+  node.fields.add("rotate_radianards", self.rotate_radianards.JsonNode());
+  node.fields.add("translate", self.translate.JsonNode());
+  node.fields.add("side_index_to_side_adjacencies", self.side_index_to_side_adjacencies.JsonNode());
+  node.fields.add("corner_index_to_corner_adjacencies", self.corner_index_to_corner_adjacencies.JsonNode());
   ret node;
 }
 
 func JsonNode(self &PatternSideAdjacency) JsonNode {
   node = JsonObject();
-  node.fields!.add("group_relative_x", self.group_relative_x.JsonNode());
-  node.fields!.add("group_relative_y", self.group_relative_y.JsonNode());
-  node.fields!.add("tile_index", self.tile_index.JsonNode());
-  node.fields!.add("side_index", self.side_index.JsonNode());
+  node.fields.add("group_relative_x", self.group_relative_x.JsonNode());
+  node.fields.add("group_relative_y", self.group_relative_y.JsonNode());
+  node.fields.add("tile_index", self.tile_index.JsonNode());
+  node.fields.add("side_index", self.side_index.JsonNode());
   ret node;
 }
 
 func JsonNode(self &PatternCornerAdjacency) JsonNode {
   node = JsonObject();
-  node.fields!.add("group_relative_x", self.group_relative_x.JsonNode());
-  node.fields!.add("group_relative_y", self.group_relative_y.JsonNode());
-  node.fields!.add("tile_index", self.tile_index.JsonNode());
-  node.fields!.add("corner_index", self.corner_index.JsonNode());
+  node.fields.add("group_relative_x", self.group_relative_x.JsonNode());
+  node.fields.add("group_relative_y", self.group_relative_y.JsonNode());
+  node.fields.add("tile_index", self.tile_index.JsonNode());
+  node.fields.add("corner_index", self.corner_index.JsonNode());
   ret node;
 }
 
-func JsonNode(self &RemoveDetailCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &RemoveDetailCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "RemoveDetail".JsonNode());
-  node.fields!.add("unit_id", self.unitViewId.JsonNode());
-  node.fields!.add("detail_id", self.detailId.JsonNode());
+  node.fields.add("command_type", "RemoveDetail".JsonNode());
+  node.fields.add("unit_id", self.unitViewId.JsonNode());
+  node.fields.add("detail_id", self.detailId.JsonNode());
   ret node;
 }
 
-func JsonNode(self &DestroyUnitCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &DestroyUnitCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "DestroyUnit".JsonNode());
-  node.fields!.add("unit_id", self.unitId.JsonNode());
+  node.fields.add("command_type", "DestroyUnit".JsonNode());
+  node.fields.add("unit_id", self.unitId.JsonNode());
   ret node;
 }
 
-func JsonNode(self &UnitHopToCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &UnitHopToCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "UnitHopTo".JsonNode());
-  node.fields!.add("unit_id", self.unitViewId.JsonNode());
-  node.fields!.add("destination", self.destination.JsonNode());
-  node.fields!.add("new_elevation", self.newElevation.JsonNode());
-  node.fields!.add("duration", self.duration.JsonNode());
+  node.fields.add("command_type", "UnitHopTo".JsonNode());
+  node.fields.add("unit_id", self.unitViewId.JsonNode());
+  node.fields.add("destination", self.destination.JsonNode());
+  node.fields.add("new_elevation", self.newElevation.JsonNode());
+  node.fields.add("duration", self.duration.JsonNode());
   ret node;
 }
 
-func JsonNode(self &UnitFadeCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &UnitFadeCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "UnitFade".JsonNode());
-  node.fields!.add("unit_id", self.unitViewId.JsonNode());
-  node.fields!.add("duration", self.duration.JsonNode());
+  node.fields.add("command_type", "UnitFade".JsonNode());
+  node.fields.add("unit_id", self.unitViewId.JsonNode());
+  node.fields.add("duration", self.duration.JsonNode());
   ret node;
 }
 
-func JsonNode(self &UnitLungeCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &UnitLungeCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "UnitLunge".JsonNode());
-  node.fields!.add("unit_id", self.unitViewId.JsonNode());
-  node.fields!.add("target", self.target.JsonNode());
-  node.fields!.add("duration", self.duration.JsonNode());
+  node.fields.add("command_type", "UnitLunge".JsonNode());
+  node.fields.add("unit_id", self.unitViewId.JsonNode());
+  node.fields.add("target", self.target.JsonNode());
+  node.fields.add("duration", self.duration.JsonNode());
   ret node;
 }
 
-func JsonNode(self &TimerCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &TimerCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "Timer".JsonNode());
-  node.fields!.add("duration", self.duration.JsonNode());
-  node.fields!.add("tag", self.tag.JsonNode());
+  node.fields.add("command_type", "Timer".JsonNode());
+  node.fields.add("duration", self.duration.JsonNode());
+  node.fields.add("tag", self.tag.JsonNode());
   ret node;
 }
 
 
-func JsonNode(self &RemoveItemCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &RemoveItemCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "RemoveItem".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
-  node.fields!.add("item_id", self.itemId.JsonNode());
+  node.fields.add("command_type", "RemoveItem".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("item_id", self.itemId.JsonNode());
   ret node;
 }
 
-func JsonNode(self &AddItemCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &AddItemCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "AddItem".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
-  node.fields!.add("item_id", self.itemId.JsonNode());
-  node.fields!.add("symbol", self.symbol.JsonNode());
+  node.fields.add("command_type", "AddItem".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("item_id", self.itemId.JsonNode());
+  node.fields.add("symbol", self.symbol.JsonNode());
   ret node;
 }
 
-func JsonNode(self &SetFeatureCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetFeatureCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetFeature".JsonNode());
-  node.fields!.add("tile_id", self.tileId.JsonNode());
-  node.fields!.add(
+  node.fields.add("command_type", "SetFeature".JsonNode());
+  node.fields.add("tile_id", self.tileId.JsonNode());
+  node.fields.add(
       "symbol",
       if self.symbol.isEmpty() { JsonNull() }
-      else { (&self.symbol.get()).JsonNode() });
+      else { self.symbol.get()&.JsonNode() });
   ret node;
 }
 
-func JsonNode(self &ClearItemsCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &ClearItemsCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "ClearItems".JsonNode());
-  node.fields!.add("tile_id", self.tileViewId.JsonNode());
+  node.fields.add("command_type", "ClearItems".JsonNode());
+  node.fields.add("tile_id", self.tileViewId.JsonNode());
   ret node;
 }
 
-func JsonNode(self &AddDetailCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &AddDetailCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "AddDetail".JsonNode());
-  node.fields!.add("unit_id", self.unitViewId.JsonNode());
-  node.fields!.add("detail_id", self.detailId.JsonNode());
-  node.fields!.add("symbol", self.symbol.JsonNode());
+  node.fields.add("command_type", "AddDetail".JsonNode());
+  node.fields.add("unit_id", self.unitViewId.JsonNode());
+  node.fields.add("detail_id", self.detailId.JsonNode());
+  node.fields.add("symbol", self.symbol.JsonNode());
   ret node;
 }
 
-func JsonNode(self &AddSymbolCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &AddSymbolCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "AddSymbol".JsonNode());
-  node.fields!.add("new_view_id", self.newViewId.JsonNode());
-  node.fields!.add("parent_view_id", self.parentViewId.JsonNode());
-  node.fields!.add("x", self.x.JsonNode());
-  node.fields!.add("y", self.y.JsonNode());
-  node.fields!.add("size", self.size.JsonNode());
-  node.fields!.add("z", self.z.JsonNode());
-  node.fields!.add("color", self.color.JsonNode());
-  node.fields!.add("symbol_id", self.symbolId.JsonNode());
-  node.fields!.add("centered", self.centered.JsonNode());
+  node.fields.add("command_type", "AddSymbol".JsonNode());
+  node.fields.add("new_view_id", self.newViewId.JsonNode());
+  node.fields.add("parent_view_id", self.parentViewId.JsonNode());
+  node.fields.add("x", self.x.JsonNode());
+  node.fields.add("y", self.y.JsonNode());
+  node.fields.add("size", self.size.JsonNode());
+  node.fields.add("z", self.z.JsonNode());
+  node.fields.add("color", self.color.JsonNode());
+  node.fields.add("symbol_id", self.symbolId.JsonNode());
+  node.fields.add("centered", self.centered.JsonNode());
   ret node;
 }
 
-func JsonNode(self &SetFadeInCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetFadeInCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetFadeIn".JsonNode());
-  node.fields!.add("id", self.id.JsonNode());
-  node.fields!.add("fade_in", self.fadeIn.JsonNode());
+  node.fields.add("command_type", "SetFadeIn".JsonNode());
+  node.fields.add("id", self.id.JsonNode());
+  node.fields.add("fade_in", self.fadeIn.JsonNode());
   ret node;
 }
 
-func JsonNode(self &SetFadeOutCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &SetFadeOutCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "SetFadeOut".JsonNode());
-  node.fields!.add("id", self.id.JsonNode());
-  node.fields!.add("fade_out", self.fadeOut.JsonNode());
+  node.fields.add("command_type", "SetFadeOut".JsonNode());
+  node.fields.add("id", self.id.JsonNode());
+  node.fields.add("fade_out", self.fadeOut.JsonNode());
   ret node;
 }
 
-func JsonNode(self &RemoveViewCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &RemoveViewCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "RemoveView".JsonNode());
-  //node.fields!.add("panel_id", self.panelId.JsonNode());
-  node.fields!.add("view_id", self.viewId.JsonNode());
+  node.fields.add("command_type", "RemoveView".JsonNode());
+  //node.fields.add("panel_id", self.panelId.JsonNode());
+  node.fields.add("view_id", self.viewId.JsonNode());
   ret node;
 }
 
-func JsonNode(self &ScheduleCloseCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &ScheduleCloseCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "ScheduleClose".JsonNode());
-  node.fields!.add("view_id", self.viewId.JsonNode());
-  node.fields!.add("start_ms_from_now", self.startMsFromNow.JsonNode());
+  node.fields.add("command_type", "ScheduleClose".JsonNode());
+  node.fields.add("view_id", self.viewId.JsonNode());
+  node.fields.add("start_ms_from_now", self.startMsFromNow.JsonNode());
   ret node;
 }
 
-func JsonNode(self &MakePanelCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &MakePanelCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "MakePanel".JsonNode());
-  node.fields!.add("id", self.id.JsonNode());
-  node.fields!.add("panel_grid_x_in_screen", self.panelGXInScreen.JsonNode());
-  node.fields!.add("panel_grid_y_in_screen", self.panelGYInScreen.JsonNode());
-  node.fields!.add("panel_grid_width", self.panelGW.JsonNode());
-  node.fields!.add("panel_grid_height", self.panelGH.JsonNode());
+  node.fields.add("command_type", "MakePanel".JsonNode());
+  node.fields.add("id", self.id.JsonNode());
+  node.fields.add("panel_grid_x_in_screen", self.panelGXInScreen.JsonNode());
+  node.fields.add("panel_grid_y_in_screen", self.panelGYInScreen.JsonNode());
+  node.fields.add("panel_grid_width", self.panelGW.JsonNode());
+  node.fields.add("panel_grid_height", self.panelGH.JsonNode());
   ret node;
 }
 
-func JsonNode(self &UnitHpChangedCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &UnitHpChangedCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "UnitHpChanged".JsonNode());
-  node.fields!.add("unit_id", self.unitViewId.JsonNode());
-  node.fields!.add("hp", self.hp.JsonNode());
+  node.fields.add("command_type", "UnitHpChanged".JsonNode());
+  node.fields.add("unit_id", self.unitViewId.JsonNode());
+  node.fields.add("hp", self.hp.JsonNode());
   ret node;
 }
 
-func JsonNode(self &AddRectangleCommand impl IDominoCommand) JsonNode {
+func JsonNode(self &AddRectangleCommand) JsonNode {
   node = JsonObject();
-  node.fields!.add("command_type", "AddRectangle".JsonNode());
-  node.fields!.add("new_view_id", self.newViewId.JsonNode());
-  node.fields!.add("parent_view_id", self.parentViewId.JsonNode());
-  node.fields!.add("x", self.x.JsonNode());
-  node.fields!.add("y", self.y.JsonNode());
-  node.fields!.add("width", self.width.JsonNode());
-  node.fields!.add("height", self.height.JsonNode());
-  node.fields!.add("z", self.z.JsonNode());
-  node.fields!.add("color", self.color.JsonNode());
-  node.fields!.add("border_color", self.borderColor.JsonNode());
+  node.fields.add("command_type", "AddRectangle".JsonNode());
+  node.fields.add("new_view_id", self.newViewId.JsonNode());
+  node.fields.add("parent_view_id", self.parentViewId.JsonNode());
+  node.fields.add("x", self.x.JsonNode());
+  node.fields.add("y", self.y.JsonNode());
+  node.fields.add("width", self.width.JsonNode());
+  node.fields.add("height", self.height.JsonNode());
+  node.fields.add("z", self.z.JsonNode());
+  node.fields.add("color", self.color.JsonNode());
+  node.fields.add("border_color", self.borderColor.JsonNode());
   ret node;
 }
